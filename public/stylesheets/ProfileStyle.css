@@ -1,0 +1,214 @@
+body{
+    background-color:#81bed1;
+}
+#grid-nav{
+    display: flex;
+    flex-flow: row;
+    min-width: 1200px;
+    height: 50px;
+}
+#grid-nav>span{
+    display: flex;
+    width: 300px;
+    text-align: center;
+    justify-content: center;
+}
+#navbarNavAltMarkup>div.navbar-nav{
+    display: flex;
+    min-width: 900px;
+    align-items: center;
+    justify-content: space-between;
+}
+#grid-nav #navbarNavAltMarkup>.navbar-nav>div{
+    display: flex;
+    width: 400px;
+    align-items: center;
+    justify-content: space-between;
+}
+#grid-nav #navbarNavAltMarkup>.navbar-nav>a{
+    display: flex;
+    align-items: center;
+}
+#grid-nav #navbarNavAltMarkup>.navbar-nav>a:hover{
+    cursor: pointer;
+}
+#grid-main{
+    display: flex;
+    width: 1000px;
+    flex-flow: column;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    min-height: 1000px;
+    margin: 20px;
+    justify-content: flex-start;
+    align-items: center;
+}
+#grid-container{
+    background-color:#81bed1;
+    display: flex;
+    grid-auto-flow: column;
+    flex-direction: column;
+    align-items: center;
+    min-width: 1200px;
+    max-width: 100vw;
+    min-height: 1000px;
+    max-height: 1500px;
+}
+#grid-profile{
+    border-radius:10px;
+    border:4px ridge #046953;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    grid-auto-flow: row;
+    min-width: 800px;
+    height: 250px;
+    background-color: #3c998d;
+}
+.user-record{
+    margin-top:5%;
+    height:100px;
+    width:400px;
+    /* border-radius:10px;
+    border:2px solid #046953; */
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-content: center;
+    align-items: center;
+    background-color:transparent;
+}
+#user-info{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+#grid-username{
+    text-align: center;
+}
+#grid-user-photo{
+    
+    height:100px;
+    width:100px;
+}
+#search-btn{
+    justify-content: center;
+    width: 150px;
+    height: 36px;
+    border: none;
+    padding: 2px 16px;
+    box-sizing: border-box;
+    border-radius: 20px;
+    outline: none;
+    background: rgb(153, 172, 235);
+    color: #fff;
+    cursor: pointer;
+}
+#search-btn:hover {
+    background: rgb(54, 100, 168);
+}
+
+
+/* post adding styles */
+.element{
+    display:flex;
+    flex-flow:column;
+    justify-content:space-evenly;
+    width:750px;
+    margin:30px 25px 30px 25px;
+    border:2px ridge gray;
+    border-radius:10px;
+}
+.title{
+    display:flex;
+    flex-flow:row;
+    width:700px;
+    margin:10px 25px 10px 25px;
+    justify-content:space-evenly;
+    align-items: center;
+}
+.person{
+    display:flex;
+    flex-flow: row;                        
+}
+.person-icon{
+   display:flex;
+    width:50px;
+    height:50px;
+}
+.person-name{
+    display: flex;
+}
+.post-time{
+    display:flex;
+    font-size:10px;
+    color:gray;
+}
+.content{
+    display:flex;
+    flex-flow:row;
+    width:700px;
+    margin:10px 25px 10px 25px;
+    justify-content:space-evenly;
+}
+.content > img{
+    display:flex;
+    width:60%;
+}
+.content > p{
+    display:flex;
+}
+.tail{
+    display:flex;
+    flex-flow:row;
+    width:700px;
+    height:50px;
+    margin:10px 25px 10px 25px;
+}
+.like{
+    display:flex;
+    flex-flow:row;
+    width:600px;
+    justify-content:space-evenly;
+    align-items:center;
+}
+.like-btn{
+    display:flex;
+    width:150px;
+    height:50px;
+    justify-content:space-evenly;
+    align-items:center;
+    border:5px solid gold;
+    border-radius:5px;
+}
+.like-btn:hover{
+    cursor: pointer;
+    background-color: gold;
+}
+.far.fa-thumbs-up{
+    display:flex;
+    font-size:30px;
+    align-items:center;
+}
+.like-text{
+    display:flex;
+    font-size:30px;
+    align-self:center;
+    margin:10px 0px 10px 0px;
+}
+.like-info{
+    display:flex;
+    width:300px;
+    align-items:center;
+    justify-content:space-evenly;
+}
+.like-count{
+    display:flex;
+    font-size:15px;
+    align-items:center;
+}
+.like-count + p{
+    display:flex;             
+    font-size:15px;
+    align-items:center;
+}
