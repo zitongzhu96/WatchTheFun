@@ -114,6 +114,7 @@ body{
     display:flex;
     flex-flow:column;
     justify-content:space-evenly;
+    align-items: center;
     width:750px;
     margin:30px 25px 30px 25px;
     border:2px ridge gray;
@@ -174,7 +175,7 @@ body{
 }
 .like-btn{
     display:flex;
-    width:150px;
+    width:100px;
     height:50px;
     justify-content:space-evenly;
     align-items:center;
@@ -185,14 +186,38 @@ body{
     cursor: pointer;
     background-color: gold;
 }
+.comment-btn{
+    display:flex;
+    width:100px;
+    height:50px;
+    justify-content:space-evenly;
+    align-items:center;
+    border:5px solid skyblue;
+    border-radius:5px;
+}
+.comment-btn:hover{
+    cursor: pointer;
+    background-color: skyblue;
+}
 .far.fa-thumbs-up{
     display:flex;
-    font-size:30px;
+    font-size:20px;
+    align-items:center;
+}
+.far.fa-comments{
+    display:flex;
+    font-size:20px;
     align-items:center;
 }
 .like-text{
     display:flex;
-    font-size:30px;
+    font-size:20px;
+    align-self:center;
+    margin:10px 0px 10px 0px;
+}
+.comment-text{
+    display:flex;
+    font-size:20px;
     align-self:center;
     margin:10px 0px 10px 0px;
 }
@@ -211,4 +236,55 @@ body{
     display:flex;             
     font-size:15px;
     align-items:center;
+}
+
+/* comment style */
+.comment-list{
+    display: flex;
+    flex-flow: column;
+    width: 750px;
+    margin: 20px 0 20px 0;
+    align-items: center;
+}
+.comment-element{
+    display: flex;
+    width: 700px;
+    justify-content: flex-start;
+    flex-flow: column;
+    border: 2px dashed darkolivegreen;
+}
+.cmt-title{
+    display: flex;
+    width: 700px;
+    justify-content: space-evenly;
+    flex-flow: row;
+    align-items: center;
+}
+.cmt-person{
+    display: flex;
+    width: 250px;
+    font-size: 15px;
+}
+.cmt-time{
+    display: flex;
+    width: 450px;
+    font-size: 10px;
+    color: gray;
+}
+.cmt-body{
+    display: flex;
+    width: 600px;
+    font-size: 15px
+}
+
+/* deletion styles */
+.fas.fa-times{
+    display: flex;
+    width: 100px;
+    font-size: 15px;
+    border: 2px solid darkgreen;
+    text-align: center;
+}
+.fas.fa-times:hover{
+    cursor: pointer;
 }

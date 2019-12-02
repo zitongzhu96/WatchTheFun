@@ -105,6 +105,7 @@ body{
     display: flex;
     flex-direction: column;
     background-color:white;
+    overflow-x: scroll;
 }
 #suggests-label{
     text-align: center;
@@ -168,6 +169,8 @@ body{
     display: flex;
     flex-direction: column;
     background-color: #dde2e1;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 #follower-container{
     margin-top:5%;
@@ -177,6 +180,8 @@ body{
     display: flex;
     flex-direction: column;
     background-color: #dde2e1;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 #following-container::-webkit-scrollbar {

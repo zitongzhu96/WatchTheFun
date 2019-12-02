@@ -19,15 +19,34 @@ app.controller('loginController', function($scope, $http) {
         alert('User Not Exists!');
         document.getElementById("name").value="";
         document.getElementById("pwd").value="";
+        $scope.username=null;
+        $scope.password=null;
       }
       else if (res.data.status=='error'){
         alert("Error, please try again later");
         document.getElementById("name").value="";
         document.getElementById("pwd").value="";
+        $scope.username=null;
+        $scope.password=null;
+      }
+      else if (res.data.status=='illegal'){
+        alert("The username can only be 4-12 characters and numbers")
+        document.getElementById("name").value="";
+        document.getElementById("pwd").value="";
+        $scope.username=null;
+        $scope.password=null;
+      }
+      else if (res.data.status=='nullpwd'){
+        alert("Password cannot be empty")
+        document.getElementById("name").value="";
+        document.getElementById("pwd").value="";
+        $scope.username=null;
+        $scope.password=null;
       }
       else{
         alert("Password incorrect, please try again!");
         document.getElementById("pwd").value="";
+        $scope.password=null;
       }
     },err => {
       console.log("Add Row ERROR: ", err);
@@ -54,6 +73,19 @@ app.controller('loginController', function($scope, $http) {
       else if (res.data.status=='fail'){
         alert('User already exist!');
         document.getElementById("name").value="";
+        $scope.username=null;
+      }
+      else if (res.data.status=='illegal'){
+        alert("The username can only be 4-12 characters and numbers")
+        document.getElementById("name").value="";
+        document.getElementById("pwd").value="";
+        $scope.username=null;
+        $scope.password=null;
+      }
+      else if (res.data.status=='nullpwd'){
+        alert("Password cannot be empty")
+        document.getElementById("pwd").value="";
+        $scope.password=null;
       }
     },err => {
       console.log("Add Row ERROR: ", err);

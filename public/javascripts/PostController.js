@@ -1,4 +1,4 @@
-var app = angular.module('MyApp', ['file-model']);
+var app = angular.module('MyApp', ['file-model','ngSanitize']);
 
 // postController
 app.controller('postController', function($scope, $http) { 
@@ -30,17 +30,30 @@ app.controller('postController', function($scope, $http) {
     daymap.set(4,"Thursday");
     daymap.set(5,"Friday");
     daymap.set(6,"Saturday");
-    daymap.set(7,"Sunday");
+    daymap.set(0,"Sunday");
     let dt=year+"."+month+"."+ date + ", "+hour+":"+minute+", "+ daymap.get(day);
+
+    let text=document.getElementById("post-content").value
+    let temp_tags=text.split("@");
+    let tags=[]
+    if (temp_tags.length>0){
+      for (index=1;index<temp_tags.length;index++){
+        let temp_username=temp_tags[index].replace(/\W.*$/,"").replace(/ .*$/,"");
+        if (tags.includes(temp_username)==false){
+          tags.push([temp_username, dt + " by " + href_list[href_list.length-1]]);
+        }
+      }
+    }
     $http({
       url: '/newPost',
       method: "POST",
       data: {
         'username': href_list[href_list.length-1],
         'picture': document.getElementById("preview-image").src,
-        'text': $scope.outtxt,
+        'text': text,
         'time': dt,
         'post_id': dt + " by " + href_list[href_list.length-1],
+        'tags': tags
         }
     }).then(res => {
       if (res.data.status=='success'){
@@ -50,8 +63,13 @@ app.controller('postController', function($scope, $http) {
     },
       err => {
         console.log("Add Post Error: ", err);
+        document.getElementById("close-post").click();
     }
   )};
 });
 
-
+app.filter('emoji', function($sce) {
+  return function(val) {
+      return $sce.trustAsHtml(val);
+  };
+});

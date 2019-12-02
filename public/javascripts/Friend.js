@@ -1,4 +1,4 @@
-var app = angular.module('MyApp',[]);
+var app = angular.module('MyApp');
 
 app.controller('searchController', function($scope, $http) { 
     $scope.searchUser = function() {
@@ -104,44 +104,43 @@ app.controller('friendlistController', function($scope, $http) {
     
   });
 
-app.controller('suggestController', function($scope, $http) {
-  var href_list=window.location.href.split("/");
-  $http({
-    url: '/suggestFriend',
-    method: "POST",
-    data: {
-        'username': href_list[href_list.length-1],
-    }
-}).then(
-    res => {
-      $scope.suggest=res.data;
-    },err => {
-        console.log("Mainpage content loading error: ", err);
-}); 
-  $scope.followUser=function($event){
-    var status=$event.event.currentTarget.innerHTML;
-    var button=$event.event.currentTarget;
+  app.controller('suggestController', function($scope, $http) {
+    var href_list=window.location.href.split("/");
+    $http({
+      url: '/suggestFriend',
+      method: "POST",
+      data: {
+          'username': href_list[href_list.length-1],
+      }
+  }).then(
+      res => {
+        $scope.suggest=res.data;
+      },err => {
+          console.log("Mainpage content loading error: ", err);
+  }); 
+  $scope.followUser=function(follow_guest){
+    var status=document.getElementById("followbtn").innerText;
     console.log(status);
     $http({
         url: '/followSuggest',
         method: "POST",
         data: {
           'follow_host': href_list[href_list.length-1],
-          'follow_guest':$event.event.path[1].children[1].innerHTML,
+          'follow_guest':follow_guest,
           'status':status
         }
     }).then(
     res => {
         if (res.data.status=="followed"){
             alert("Followed:)");
-            button.innerHTML="Unfollow";
+            document.getElementById("followbtn").innerText="Unfollow";
         }
         else if (res.data.status=="unfollowed"){
             alert("Unfollowed:(");
-            button.innerHTML="Follow";
+            document.getElementById("followbtn").innerText="Follow";
         }
     },err => {
         console.log("Follow error: ", err);
     }); 
-    };
-});
+};
+  });

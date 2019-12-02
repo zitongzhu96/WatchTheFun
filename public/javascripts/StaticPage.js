@@ -17,18 +17,6 @@ if (document.getElementById("grid-nav")!=null){
     }
 }
 
-// No returning after going to login page
-// Instead of assigning href, we use replace to eradicate the returning option
-function noReturn(){
-    if (confirm("You are now exiting to login page. Confirm leaving?")){
-        window.location.replace("/Login");
-        return true;
-    }   
-}
-if (document.getElementById("loginpage")!=null){
-    document.getElementById("loginpage").addEventListener("click",noReturn);
-}
-
 // Load the default icon in the canvas with hidden element
 function hideDefaultIcon(){
     let icon = document.createElement("img");
@@ -48,3 +36,14 @@ if (document.getElementById("defaultIcon")!=null){
     hideDefaultIcon();
 }
 
+// Append icons to textarea;
+if (document.getElementsByClassName("emoji-finder")!=null){
+    var emojis=document.getElementsByClassName("dropdown-item");
+    for (index=0;index<emojis.length;index++){
+        var curr_emoji=emojis[index];
+        curr_emoji.addEventListener("click", function(event){
+            event.currentTarget.parentNode.parentNode.parentNode.parentNode.firstElementChild.value+=event.currentTarget.innerHTML;
+        });
+    }
+}
+    

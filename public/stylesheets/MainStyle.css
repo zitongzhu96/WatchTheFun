@@ -143,19 +143,19 @@
     display: flex;
     flex-flow: column;
     min-width: 400px;
-    height: 300px;
+    height: 400px;
 }
 #grid-advice>div>a{
     font-size: 0.8em;
 }
 
 /* The CSS on posting window */
-#post-title{
+.modal-title{
     color: black;
     text-align: center;
 }
 
-#post-content{
+.modal-text{
     color: black;
     line-height: 28px;
     min-height: 25vh;
@@ -166,18 +166,15 @@
     display: flex;
     flex-flow: row;
     justify-content: space-around;
-    align-items: flex-start;
+    align-items: center;
 }
 .modal-functions #imgfinder{
     display: flex;
+    align-items: center;
 }
 .modal-functions .emoji-finder{
     display: flex;
-    color: darkblue;
-    text-underline-position: auto;
-}
-.modal-functions .emoji-finder:hover{
-    cursor: pointer;
+    align-items: center;
 }
 #imgfinder{
     color: darkblue;
@@ -187,7 +184,7 @@
     cursor: pointer;
 }
 
-#post-footer{
+.modal-footer{
     color: white;
 }
 
@@ -344,4 +341,119 @@
     display:flex;             
     font-size:15px;
     align-items:center;
+}
+
+/* emoji adder styles */
+.emoji-dropdown{
+    display: flex;
+    color: darkblue;
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: bold;
+    text-underline-position: auto;
+    margin: 10px 0 10px 0;
+}
+.emoji-dropdown:hover{
+    cursor: pointer;
+}
+.dropdown-menu{
+    width: 30em;
+}
+.dropdown-menu:hover{
+    cursor: pointer;
+}
+div.dropdown-row>a.dropdown-item{
+    display:inline-block;
+    width: 12%;
+}
+
+/* comment style */
+.comment-list{
+    display: flex;
+    flex-flow: column;
+    width: 750px;
+    margin: 20px 0 20px 0;
+    align-items: center;
+}
+.comment-element{
+    display: flex;
+    width: 700px;
+    justify-content: flex-start;
+    flex-flow: column;
+    border: 2px dashed darkolivegreen;
+}
+.cmt-title{
+    display: flex;
+    width: 700px;
+    justify-content: space-evenly;
+    flex-flow: row;
+    align-items: center;
+}
+.cmt-person{
+    display: flex;
+    width: 250px;
+    font-size: 15px;
+}
+.cmt-time{
+    display: flex;
+    width: 450px;
+    font-size: 10px;
+    color: gray;
+}
+.cmt-body{
+    display: flex;
+    width: 600px;
+    font-size: 15px
+}
+.friendlist-table{
+    text-align: right;
+}
+.friendbtn{
+    height:50px;
+    width:280px;
+    border-radius:10px;
+    border:2px solid #046953;
+}
+#following-container{
+    margin-top:5%;
+    margin-right: 3%;
+    height:125px;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    background-color: #dde2e1;
+    overflow-y:scroll;
+}
+#follower-container{
+    margin-top:5%;
+    margin-right: 5%;
+    height:125px;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    background-color: #dde2e1;
+    overflow-y:scroll;
+}
+.su-container{
+    height:200px;
+    width:200px;
+    display:flex;
+    flex-direction: column;
+    align-content: center;
+    align-items: center;
+}
+#suggests{
+    margin-top:2%;
+    padding-top:10px;
+    width:300px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    background-color:white;
+    overflow-y:scroll;
+}
+.search-btn{
+    height:25px;
+    width:100px;
+    border-radius:10px;
+    border:2px solid #046953;
 }
