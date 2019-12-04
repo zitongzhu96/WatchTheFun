@@ -7,6 +7,9 @@ app.controller('searchController', function($scope, $http) {
         $http({
             url: '/searchUser',
             method: "POST",
+            headers: {
+              'token': sessionStorage.token
+            },
             data: {
             'searchname': $scope.searchname,
             'username': href_list[href_list.length-1]
@@ -14,18 +17,17 @@ app.controller('searchController', function($scope, $http) {
       }).then(
       res => {      
           if (res.data.status=='success'){
-        window.location.href = "http://localhost:8081/GuestProfile/"+res.data.user+"/"+username;
+        window.location.href = "./GuestProfile/"+res.data.user+"/"+username;
       }else if (res.data.status=="myself"){
-        window.location.href = "http://localhost:8081/Profile/"+username;
-      }
-      else if (res.data.status=='unexist'){
-        alert('User Not Exists!');
-      }
-      else {
-        alert("Error, please try again later");
-      } 
-    });
-}
+        window.location.href = "./Profile/"+username;
+        }
+      },err => {
+        if (err.data.status=='unexist'){
+          alert('User Not Exists!');
+        }
+        console.log("Error: "+err.data.info);
+      });
+    }
 });
 
 app.controller('friendlistController', function($scope, $http) {
@@ -33,20 +35,25 @@ app.controller('friendlistController', function($scope, $http) {
     $http({
       url: '/following',
       method: 'POST',
+      headers: {
+        'token': sessionStorage.token
+      },
       data: {
         'username': href_list[href_list.length-1],
       }
     }).then(
     res => {
-      console.log(res.data);
       $scope.following=res.data;
     },err => {
-      console.log("Find Following ERROR: ", err);
+      console.log("Find Following ERROR: ", err.data.info);
     });
 
     $http({
         url: '/follower',
         method: 'POST',
+        headers: {
+          'token': sessionStorage.token
+        },
         data: {
           'username': href_list[href_list.length-1],
       }
@@ -55,7 +62,7 @@ app.controller('friendlistController', function($scope, $http) {
           console.log(res.data);
           $scope.follower=res.data;
         },err => {
-          console.log("Find Follower ERROR: ", err);
+          console.log("Find Follower ERROR: ", err.data.info);
     });
     
     $scope.goProfile1=function(follow_guest){
@@ -64,19 +71,22 @@ app.controller('friendlistController', function($scope, $http) {
       $http({
         url: '/goFollowing/'+follow_guest,
         method: 'POST',
+        headers: {
+          'token': sessionStorage.token
+        },
         data:{
-          'follow_host': username,
+          'username': username,
           'follow_guest':follow_guest,
         }
       }).then(
     res => {
       if (res.data.status=='success'){
-        window.location.href = "http://localhost:8081/GuestProfile/"+follow_guest+"/"+username;
+        window.location.href = "./GuestProfile/"+follow_guest+"/"+username;
       }else if (res.data.status=="myself"){
-        window.location.href = "http://localhost:8081/Profile/"+username;
+        window.location.href = "./Profile/"+username;
       }
       },err => {
-        console.log("Find profile ERROR: ", err);
+        console.log("Find profile ERROR: ", err.data.info);
       });
     }
 
@@ -86,19 +96,22 @@ app.controller('friendlistController', function($scope, $http) {
       $http({
         url: '/goFollowing/'+follow_host,
         method: 'POST',
+        headers: {
+          'token': sessionStorage.token
+        },
         data:{
-          'follow_host': username,
+          'username': username,
           'follow_guest':follow_host,
         }
       }).then(
     res => {
       if (res.data.status=='success'){
-        window.location.href = "http://localhost:8081/GuestProfile/"+follow_host+"/"+username;
+        window.location.href = "./GuestProfile/"+follow_host+"/"+username;
       }else if (res.data.status=="myself"){
-        window.location.href = "http://localhost:8081/Profile/"+username;
+        window.location.href = "./Profile/"+username;
       }
       },err => {
-        console.log("Find profile ERROR: ", err);
+        console.log("Find profile ERROR: ", err.data.info);
       });
     }
     
@@ -109,6 +122,9 @@ app.controller('suggestController', function($scope, $http) {
   $http({
     url: '/suggestFriend',
     method: "POST",
+    headers: {
+      'token': sessionStorage.token
+    },
     data: {
         'username': href_list[href_list.length-1],
     }
@@ -116,7 +132,7 @@ app.controller('suggestController', function($scope, $http) {
     res => {
       $scope.suggest=res.data;
     },err => {
-        console.log("Mainpage content loading error: ", err);
+        console.log("Suggest loading error: ", err.data.info);
 }); 
   $scope.followUser=function($event){
     var status=$event.event.currentTarget.innerHTML;
@@ -125,6 +141,9 @@ app.controller('suggestController', function($scope, $http) {
     $http({
         url: '/followSuggest',
         method: "POST",
+        headers: {
+          'token': sessionStorage.token
+        },
         data: {
           'follow_host': href_list[href_list.length-1],
           'follow_guest':$event.event.path[1].children[1].innerHTML,
@@ -141,7 +160,7 @@ app.controller('suggestController', function($scope, $http) {
             button.innerHTML="Follow";
         }
     },err => {
-        console.log("Follow error: ", err);
+        console.log("Follow error: ", err.data.info);
     }); 
     };
 });

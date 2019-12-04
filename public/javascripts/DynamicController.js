@@ -8,9 +8,13 @@ app.controller('dynamicController',function($scope, $http) {
         var post_id=$event.event.path[4].firstElementChild.innerHTML;
         var like_status=$event.event.path[1].lastElementChild.innerHTML;
         if (like_status==" Like !"){
+            // thenable functions, promises
             $http({
                 url: '/addLike',
                 method: "POST",
+                headers: {
+                    'token': sessionStorage.token
+                },
                 data: {
                     'username': href_list[href_list.length-1],
                     'post_id': post_id,
@@ -23,17 +27,17 @@ app.controller('dynamicController',function($scope, $http) {
                         $event.event.path[1].lastElementChild.innerHTML=" Liked";
                         $event.event.path[2].firstElementChild.style.backgroundColor="gold";
                         $event.event.path[2].lastElementChild.firstElementChild.innerHTML=Number($event.event.path[2].lastElementChild.firstElementChild.innerHTML)+1;
-                    }else{
-                        console.log("nothing return");
-                    }
-                },
+                }},
                 err => {
-                    console.log("add like error: ", err);
+                    console.log("Add like error: ", err.data.info);
                 })
         }else if (like_status==" Liked"){
             $http({
                 url: '/cancelLike',
-                method: "POST",
+                method: "PUT",
+                headers: {
+                    'token': sessionStorage.token
+                },
                 data: {
                     'username': href_list[href_list.length-1],
                     'post_id': post_id,
@@ -46,12 +50,10 @@ app.controller('dynamicController',function($scope, $http) {
                         $event.event.path[1].lastElementChild.innerHTML=" Like !";
                         $event.event.path[2].firstElementChild.style.backgroundColor="";
                         $event.event.path[2].lastElementChild.firstElementChild.innerHTML=Number($event.event.path[2].lastElementChild.firstElementChild.innerHTML)-1;
-                    }else{
-                        console.log("nothing cancelled");
                     }
                 },
                 err => {
-                    console.log("cancel like error: ", err);
+                    console.log("cancel like error: ", err.data.info);
                 });            
         };
     };
@@ -67,6 +69,8 @@ app.controller('dynamicController',function($scope, $http) {
         }else if (curr_target.getAttribute("data-target")=="#delete-comment"){
             var comment_id=$event.event.path[1].firstElementChild.innerHTML;
             document.getElementById("delete-comment-id").innerHTML=comment_id;
+        }else{
+            console.log("Send post ID error");
         }
     }
 
@@ -105,6 +109,9 @@ app.controller('dynamicController',function($scope, $http) {
         $http({
             url: '/addComment',
             method: "POST",
+            headers: {
+                'token': sessionStorage.token
+            },
             data: {
                 'post_id': post_id,
                 'username': href_list[href_list.length-1],
@@ -119,7 +126,7 @@ app.controller('dynamicController',function($scope, $http) {
                 }
             },
             err =>{
-                console.log("comment insertion error :"+ err);
+                console.log("comment insertion error :"+ err.data.info);
                 document.getElementById("close-comment").click();
         });
     };
@@ -129,8 +136,12 @@ app.controller('dynamicController',function($scope, $http) {
         $http({
             url: '/deletePost',
             method: "PUT",
+            headers: {
+                'token': sessionStorage.token
+            },
             data:{
-                'post_id': document.getElementById("delete-post-id").innerHTML
+                'post_id': document.getElementById("delete-post-id").innerHTML,
+                'username': href_list[href_list.length-1]
             }
         }).then(
         res=>{
@@ -139,7 +150,7 @@ app.controller('dynamicController',function($scope, $http) {
                 document.getElementById("close-del-post").click();
             }
         },err=>{
-            console.log("post deletion error :"+ err);
+            console.log("post deletion error :"+ err.data.info);
             document.getElementById("close-del-post").click();
         });
     };
@@ -148,8 +159,12 @@ app.controller('dynamicController',function($scope, $http) {
         $http({
             url: '/deleteComment',
             method: "PUT",
+            headers: {
+                'token': sessionStorage.token
+            },
             data:{
-                'comment_id': document.getElementById("delete-comment-id").innerHTML
+                'comment_id': document.getElementById("delete-comment-id").innerHTML,
+                'username': href_list[href_list.length-1]
             }
         }).then(
         res=>{
@@ -158,8 +173,26 @@ app.controller('dynamicController',function($scope, $http) {
                 document.getElementById("close-del-comment").click();
             }
         },err=>{
-            console.log("post deletion error :"+ err);
+            console.log("post deletion error :"+ err.data.info);
             document.getElementById("close-del-comment").click();
         });
     };
+
+    $scope.logout=function(){
+        $http({
+            url: '/logout',
+            method: "GET",
+            headers: {
+                'token': sessionStorage.token
+            }
+        }).then(
+            res =>{
+                if (res.data.status=="logout"){
+                    sessionStorage.clear();
+                    window.location.href="../";
+                }
+            },err=>{
+                console.log("logout error");
+        });
+    }
 });

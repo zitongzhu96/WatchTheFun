@@ -5,6 +5,9 @@ app.controller('profileController',function($scope, $http) {
     $http({
         url: '/injectMain',
         method: "POST",
+        headers: {
+            'token': sessionStorage.token
+        },
         data: {
             'username': href_list[href_list.length-1],
         }
@@ -62,13 +65,16 @@ app.controller('profileController',function($scope, $http) {
                 $scope.injectMain=sorted_content;
             }
         },err => {
-            console.log("Mainpage content loading error: ", err);
+            console.log("Mainpage content loading error: ", err.data.info);
     }); 
     
     $scope.addIcon = function(){
         $http({
             url: '/addIcon',
             method: "POST",
+            headers: {
+                'token': sessionStorage.token
+            },
             data: {
                 'username': href_list[href_list.length-1],
             }
@@ -83,13 +89,16 @@ app.controller('profileController',function($scope, $http) {
                 user_icon.src=icon_value[0].icon;
             }
         },err => {
-            console.log("Mainpage profile loading error: ", err);
+            console.log("Mainpage profile loading error: ", err.data.info);
         }); 
     }; 
 
     $http({
         url: '/countPost',
         method: "POST",
+        headers: {
+            'token': sessionStorage.token
+        },
         data: {
             'username': href_list[href_list.length-1]
         }
@@ -98,12 +107,15 @@ app.controller('profileController',function($scope, $http) {
         // console.log(res.data);
         document.getElementById("numPosts").innerHTML=res.data[0].countPost;
     },err => {
-        console.log("Follow error: ", err);
+        console.log("Follow error: ", err.data.info);
     }); 
 
     $http({
         url: '/countFollower',
         method: "POST",
+        headers: {
+            'token': sessionStorage.token
+        },
         data: {
             'username': href_list[href_list.length-1]
         }
@@ -112,12 +124,15 @@ app.controller('profileController',function($scope, $http) {
         // console.log(res.data);
         document.getElementById("numFollowers").innerHTML=res.data[0].countFollower;
     },err => {
-        console.log("Follow error: ", err);
+        console.log("Follow error: ", err.data.info);
     }); 
 
     $http({
         url: '/countFollowing',
         method: "POST",
+        headers: {
+            'token': sessionStorage.token
+        },
         data: {
             'username': href_list[href_list.length-1]
         }
@@ -126,6 +141,6 @@ app.controller('profileController',function($scope, $http) {
         // console.log(res.data);
         document.getElementById("numFollowings").innerHTML=res.data[0].countFollowing;
     },err => {
-        console.log("Follow error: ", err);
+        console.log("Follow error: ", err.data.info);
     }); 
 });

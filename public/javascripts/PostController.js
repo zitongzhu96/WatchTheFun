@@ -47,6 +47,9 @@ app.controller('postController', function($scope, $http) {
     $http({
       url: '/newPost',
       method: "POST",
+      headers: {
+        'token': sessionStorage.token
+      },
       data: {
         'username': href_list[href_list.length-1],
         'picture': document.getElementById("preview-image").src,
@@ -62,7 +65,7 @@ app.controller('postController', function($scope, $http) {
       }
     },
       err => {
-        console.log("Add Post Error: ", err);
+        console.log("Add Post Error: ", err.data.info);
         document.getElementById("close-post").click();
     }
   )};

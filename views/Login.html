@@ -19,8 +19,8 @@
     <body>      
         <div class="container login-container" ng-controller="loginController">
             <div class="heading">Watch the Fun !</div>
-            <div>USERNAME:   <input type="text" class="input username" placeholder="Username" ng-model="username" id="name"/></div>
-            <div>PASSWORD:   <input type="password" class="input password" placeholder="Password" ng-model="password" id="pwd"/></div>
+            <div>USERNAME:   <input type="text" class="input username" placeholder="Username" ng-model="username" ng-init="username =''" id="name"/></div>
+            <div>PASSWORD:   <input type="password" class="input password" placeholder="Password" ng-model="password" ng-init="password =''" id="pwd"/></div>
             <div>
                 <button type="button" class="login-button" id="login" name="Login" ng-click="verifyLogin()">Login</button>
                 <button type="button" class="login-button" id="signup" name="SignUp" ng-click="newUser()">Sign Up</button>

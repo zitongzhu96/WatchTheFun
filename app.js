@@ -1,9 +1,32 @@
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
+const express = require('express');
+const path = require('path');
+const favicon = require('serve-favicon');
+const logger = require('morgan');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const jwt = require('jsonwebtoken');
+
+// web socket
+const WebSocket = require('ws');
+
+// replace with passport token
+const serverToken = jwt.sign({
+  name: 'cis557server',
+  team: ['Yifeng Mao','Zitong Zhu'],
+}, 'watch_the_fun', { expiresIn: '1h' });
+const ws_url = 'ws://localhost:8082/';
+const ws_connection = new WebSocket(ws_url, {
+  headers: { token: serverToken },
+});
+ws_connection.onopen = () => {
+  ws_connection.send('["cis557server"]');
+};
+ws_connection.onerror = (err) => {
+  console.log(`WebSocket error: ${err}`);
+};
+ws_connection.onmessage = (mess) => {
+  console.log(mess.data);
+};
 
 var index = require('./routes/index');
 // var users = require('./routes/users');
@@ -38,10 +61,9 @@ app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.render('Login');
 });
 
 app.listen('8081', function() {

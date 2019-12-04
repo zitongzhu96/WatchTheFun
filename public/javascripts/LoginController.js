@@ -8,48 +8,61 @@ app.controller('loginController', function($scope, $http) {
       method: "POST",
       data: {
         'username': $scope.username,
-        'password': $scope.password
+        'password': $scope.password,
+        'date' : new Date().getTime()
       }
     }).then(
     res => {
       if (res.data.status=='success'){
-        window.location.href = "http://localhost:8081/MainPage/"+res.data.user;
+        if (sessionStorage.getItem("token")!=null){
+          sessionStorage.removeItem("token");
+        }
+        sessionStorage.token=res.data.token;
+        window.location.href = "./MainPage/"+res.data.user;
       }
-      else if (res.data.status=='unexist'){
+    },err => {
+      if (err.data.status=='unexist'){
         alert('User Not Exists!');
         document.getElementById("name").value="";
         document.getElementById("pwd").value="";
-        $scope.username=null;
-        $scope.password=null;
+        $scope.username="";
+        $scope.password="";
       }
-      else if (res.data.status=='error'){
+      else if (err.data.status=='error'){
         alert("Error, please try again later");
         document.getElementById("name").value="";
         document.getElementById("pwd").value="";
-        $scope.username=null;
-        $scope.password=null;
+        $scope.username="";
+        $scope.password="";
       }
-      else if (res.data.status=='illegal'){
+      else if (err.data.status=='illegal'){
         alert("The username can only be 4-12 characters and numbers")
         document.getElementById("name").value="";
         document.getElementById("pwd").value="";
-        $scope.username=null;
-        $scope.password=null;
+        $scope.username="";
+        $scope.password="";
       }
-      else if (res.data.status=='nullpwd'){
+      else if (err.data.status=='nullpwd'){
         alert("Password cannot be empty")
         document.getElementById("name").value="";
         document.getElementById("pwd").value="";
-        $scope.username=null;
-        $scope.password=null;
+        $scope.username="";
+        $scope.password="";
       }
-      else{
+      else if (err.data.status=='fail'){
         alert("Password incorrect, please try again!");
         document.getElementById("pwd").value="";
-        $scope.password=null;
+        $scope.password="";
       }
-    },err => {
-      console.log("Add Row ERROR: ", err);
+      else if (err.data.status=='locked'){
+        alert("Your account has been lock, please wait!");
+        document.getElementById("name").value="";
+        document.getElementById("pwd").value="";
+        $scope.username="";
+        $scope.password="";
+      }
+      console.log("Add Row ERROR: ", err.data.info);
+    
     });
 
   };
@@ -70,25 +83,27 @@ app.controller('loginController', function($scope, $http) {
       if (res.data.status=='success'){
         alert('Sign up successfully! Please login');
       }
-      else if (res.data.status=='fail'){
+    },err => {
+      if (err.data.status=='fail'){
         alert('User already exist!');
         document.getElementById("name").value="";
-        $scope.username=null;
+        document.getElementById("pwd").value="";
+        $scope.username="";
+        $scope.password="";
       }
-      else if (res.data.status=='illegal'){
-        alert("The username can only be 4-12 characters and numbers")
+      else if (err.data.status=='illegal'){
+        alert("The username can only be 4-12 characters and numbers");
         document.getElementById("name").value="";
         document.getElementById("pwd").value="";
-        $scope.username=null;
-        $scope.password=null;
+        $scope.username="";
+        $scope.password="";
       }
-      else if (res.data.status=='nullpwd'){
-        alert("Password cannot be empty")
+      else if (err.data.status=='nullpwd'){
+        alert("Password should be longer than 8 characters and include Capital letter, numbers, letters, and symbol");
         document.getElementById("pwd").value="";
-        $scope.password=null;
+        $scope.password="";
       }
-    },err => {
-      console.log("Add Row ERROR: ", err);
+      console.log("Add Row ERROR: ", err.data.info);
     }); 
   };
 });

@@ -46,4 +46,10 @@ if (document.getElementsByClassName("emoji-finder")!=null){
         });
     }
 }
-    
+if (document.getElementById("name")!=null){
+    document.getElementById("name").innerText="";
+}
+if (document.getElementById("pwd")!=null){
+    document.getElementById("pwd").innerText="";
+}
+
