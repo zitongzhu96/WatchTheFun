@@ -1,78 +1,81 @@
-var app = angular.module('MyApp', ['file-model','ngSanitize']);
+var app = angular.module('MyApp', ['file-model','ngSanitize']);// eslint-disable-line
 
-// postController
-app.controller('postController', function($scope, $http) { 
-  $scope.addPost=function() {
-    var href_list=window.location.href.split("/");
-    var now=new Date();
-    let year=now.getFullYear();
-    let month=now.getMonth()+1;
-    if (month<10){
-      month="0"+String(month);
+app.controller('postController', ($scope, $http) => {
+  $scope.addPost = () => {
+    const hrefList = window.location.href.split('/');
+    const now = new Date();
+    const year = now.getFullYear();
+    let month = now.getMonth() + 1;
+    if (month < 10) {
+      month = `0${String(month)}`;
     }
-    let date=now.getDate();
-    if (date<10){
-      date="0"+String(date);
+    let date = now.getDate();
+    if (date < 10) {
+      date = `0${String(date)}`;
     }
-    let hour=now.getHours();
-    if (hour<10){
-      hour="0"+String(hour);
+    let hour = now.getHours();
+    if (hour < 10) {
+      hour = `0${String(hour)}`;
     }
-    let minute=now.getMinutes();
-    if (minute<10){
-      minute="0"+String(minute);
+    let minute = now.getMinutes();
+    if (minute < 10) {
+      minute = `0${String(minute)}`;
     }
-    let day=now.getDay();
-    let daymap=new Map();
-    daymap.set(1,"Monday");
-    daymap.set(2,"Tuesday");
-    daymap.set(3,"Wednesday");
-    daymap.set(4,"Thursday");
-    daymap.set(5,"Friday");
-    daymap.set(6,"Saturday");
-    daymap.set(0,"Sunday");
-    let dt=year+"."+month+"."+ date + ", "+hour+":"+minute+", "+ daymap.get(day);
+    const day = now.getDay();
+    const daymap = new Map();
+    daymap.set(1, 'Monday');
+    daymap.set(2, 'Tuesday');
+    daymap.set(3, 'Wednesday');
+    daymap.set(4, 'Thursday');
+    daymap.set(5, 'Friday');
+    daymap.set(6, 'Saturday');
+    daymap.set(0, 'Sunday');
+    const dt = `${year}.${month}.${date}, ${hour}:${minute}, ${daymap.get(day)}`;
 
-    let text=document.getElementById("post-content").value
-    let temp_tags=text.split("@");
-    let tags=[]
-    if (temp_tags.length>0){
-      for (index=1;index<temp_tags.length;index++){
-        let temp_username=temp_tags[index].replace(/\W.*$/,"").replace(/ .*$/,"");
-        if (tags.includes(temp_username)==false){
-          tags.push([temp_username, dt + " by " + href_list[href_list.length-1]]);
+    const text = document.getElementById('post-content').value;
+    const tempTags = text.split('@');
+    const tags = [];
+    if (tempTags.length > 0) {
+      for (let index = 1; index < tempTags.length; index += 1) {
+        const tempUsername = tempTags[index].replace(/\W.*$/, '').replace(/ .*$/, '');
+        if (tags.includes(tempUsername) === false) {
+          tags.push([tempUsername, `${dt} by ${hrefList[hrefList.length - 1]}`]);
         }
       }
     }
     $http({
       url: '/newPost',
-      method: "POST",
+      method: 'POST',
       headers: {
-        'token': sessionStorage.token
+        token: sessionStorage.token,
       },
       data: {
-        'username': href_list[href_list.length-1],
-        'picture': document.getElementById("preview-image").src,
-        'text': text,
-        'time': dt,
-        'post_id': dt + " by " + href_list[href_list.length-1],
-        'tags': tags
+        user: hrefList[hrefList.length - 1],
+        pic: document.getElementById('preview-image').src,
+        txt: text,
+        date: dt,
+        postid: `${dt} by ${hrefList[hrefList.length - 1]}`,
+        tag: tags,
+      },
+    }).then(
+      (res) => {
+        if (res.data.status === 'success') {
+          console.log('New post is recorded!');
+          document.getElementById('close-post').click();
         }
-    }).then(res => {
-      if (res.data.status=='success'){
-        console.log("New post is recorded!");
-        document.getElementById("close-post").click();
-      }
-    },
-      err => {
-        console.log("Add Post Error: ", err.data.info);
-        document.getElementById("close-post").click();
-    }
-  )};
+      },
+      (err) => {
+        console.log('Add Post Error: ', err.data.info);
+        document.getElementById('close-post').click();
+      },
+    );
+  };
 });
 
-app.filter('emoji', function($sce) {
-  return function(val) {
-      return $sce.trustAsHtml(val);
+// eslint-disable-next-line arrow-body-style
+app.filter('emoji', ($sce) => {
+// eslint-disable-next-line arrow-body-style
+  return (val) => {
+    return $sce.trustAsHtml(val);
   };
 });
