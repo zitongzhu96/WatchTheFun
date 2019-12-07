@@ -1,14 +1,14 @@
 var app = angular.module('MyApp',[]); // eslint-disable-line
 
-app.controller('profileController', ($scope, $http) => {
+app.controller('profileController', function($scope, $http){// eslint-disable-line
   const hrefList = window.location.href.split('/');
   $http({
     url: '/injectMain',
-    method: 'POST',
+    method: 'GET',
     headers: {
       token: sessionStorage.token,
     },
-    data: {
+    params: {
       username: hrefList[hrefList.length - 2],
     },
   }).then(
@@ -71,11 +71,11 @@ app.controller('profileController', ($scope, $http) => {
   $scope.addIcon = () => {
     $http({
       url: '/addIcon',
-      method: 'POST',
+      method: 'GET',
       headers: {
         token: sessionStorage.token,
       },
-      data: {
+      params: {
         user: hrefList[hrefList.length - 2],
       },
     }).then(
@@ -95,11 +95,11 @@ app.controller('profileController', ($scope, $http) => {
 
   $http({
     url: '/countPost',
-    method: 'POST',
+    method: 'GET',
     headers: {
       token: sessionStorage.token,
     },
-    data: {
+    params: {
       username: hrefList[hrefList.length - 2],
     },
   }).then(
@@ -113,11 +113,11 @@ app.controller('profileController', ($scope, $http) => {
 
   $http({
     url: '/countFollower',
-    method: 'POST',
+    method: 'GET',
     headers: {
       token: sessionStorage.token,
     },
-    data: {
+    params: {
       username: hrefList[hrefList.length - 2],
     },
   }).then(
@@ -131,11 +131,11 @@ app.controller('profileController', ($scope, $http) => {
 
   $http({
     url: '/countFollowing',
-    method: 'POST',
+    method: 'GET',
     headers: {
       token: sessionStorage.token,
     },
-    data: {
+    params: {
       username: hrefList[hrefList.length - 2],
     },
   }).then(

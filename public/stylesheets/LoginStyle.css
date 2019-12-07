@@ -1,55 +1,31 @@
 body{
-    background-color:#81bed1;
+    background-color: #d8bd8b;
+    padding-left: 50px;
+    padding-right: 50px;
+    display: flex;
+    justify-content: space-between;
 }
-.heading {
-  font-size: 32px;
-}
-
-.login-container {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+#rightside{
+  width:50vw;
+  min-width: 500px;
+  height:100vh;
+  min-height: 700px;
   display: flex;
-  flex-flow: column nowrap;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color:transparent;
+  background-color: ivory;
 }
 
 .login-container .input {
   margin: 10px 0;
-  width: 250px;
-  height: 36px;
-  border: none;
+  width: 200px;
+  height: 40px;
+  border: 1px solid black;
   padding: 2px 16px;
   box-sizing: border-box;
-  border-radius: 20px;
   outline: none;
 }
-.login-container .login-button{
-    margin: 10px 0 20px 20px;
-    width: 150px;
-    height: 36px;
-    border: none;
-    padding: 2px 16px;
-    box-sizing: border-box;
-    border-radius: 20px;
-    outline: none;
-    background: #3c998d;
-    color: #fff;
-    cursor: pointer;
-}
-
-
-.login-container .login-button:hover {
-  background: #046953;
-}
-
-.login-container .login-button:active {
-  background: #046953;
-}
-
 ::-webkit-input-placeholder {
   /* Chrome/Opera/Safari */
   color: #bbb;
@@ -68,4 +44,103 @@ body{
 :-moz-placeholder {
   /* Firefox 18- */
   color: #bbb;
+}
+
+.heading {
+align-self: center;
+font-family: cursive;
+/* text-transform: uppercase; */
+font-size: 40px;
+color: #0d8a37;
+}
+
+.login-container {
+  height:600px;
+  width:400px;
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.login-container .login-button{
+  width: 199px;
+  height: 40px;
+  border: 1px solid black;
+  box-sizing: border-box;
+  background: #0d8a37;
+  color: #fff;
+  cursor: pointer;
+}
+.heading > img{
+width:80px;
+height: 55px;
+}
+.small-img {
+width:80px;
+height: 55px;
+}
+
+.login-container .login-button:hover {
+background: #4B4B4B;
+}
+
+.login-container .login-button:active {
+background: #4B4B4B;
+}
+
+#bg-container{
+width:50vw;
+min-width: 650px;
+height:100vh;
+min-height: 700px;
+background-color: black;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+background-image: url(https://media.worldnomads.com/learnimages/2019/newimages/Annapurnamellor.jpg);
+background-repeat:no-repeat;
+/* animation: 10s rainbow infinite linear; */
+}
+.large-img{
+width:135px;
+height: 55px;
+}
+#icon-container{
+width:295px;
+position:fixed;
+top:670px;
+right:0px;
+}
+
+::-webkit-input-placeholder {
+/* Chrome/Opera/Safari */
+  color: #bbb;
+}
+
+::-moz-placeholder {
+/* Firefox 19+ */
+color: #bbb;
+}
+
+:-ms-input-placeholder {
+/* IE 10+ */
+color: #bbb;
+}
+
+:-moz-placeholder {
+/* Firefox 18- */
+color: #bbb;
+}
+
+.login100-form-title {
+  font-family: Poppins-Regular;
+  font-size: 15px;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-align: center;
+  width: 100%;
+  display: block;
 }

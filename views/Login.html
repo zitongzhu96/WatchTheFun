@@ -16,16 +16,29 @@
         <script src="/javascripts/LoginController.js" type="text/javascript"></script>
     </head>
 
-    <body>      
-        <div class="container login-container" ng-controller="loginController">
-            <div class="heading">Watch the Fun !</div>
-            <div>USERNAME:   <input type="text" class="input username" placeholder="Username" ng-model="username" ng-init="username =''" id="name"/></div>
-            <div>PASSWORD:   <input type="password" class="input password" placeholder="Password" ng-model="password" ng-init="password =''" id="pwd"/></div>
+    <body>
+        <div id=bg-container>
+        </div>
+        <div id="rightside">
+        <div class="login-container" ng-controller="loginController">
+            <div class="heading">Watch the Fun</div>
             <div>
-                <button type="button" class="login-button" id="login" name="Login" ng-click="verifyLogin()">Login</button>
-                <button type="button" class="login-button" id="signup" name="SignUp" ng-click="newUser()">Sign Up</button>
-                <canvas id="defaultIcon" width="120" height="120" style="display: none;"></canvas>
+            <span class="login100-form-title" style="color: #555555; font-size:20px">
+                    Account Login
+                </span>
+                <center>
+                    <input type="text" class="input username" placeholder="Username" ng-model="username" ng-init="username =''" id="name"/><input type="password" class="input password" placeholder="Password" ng-model="password" ng-init="password =''" id="pwd"/>
+                </center>
+                <center>
+                    <button type="button" class="login-button" id="login" name="Login" ng-click="verifyLogin()"><span class="login100-form-title">Login</span></button><button type="button" class="login-button" id="signup" name="SignUp" ng-click="newUser()"><span class="login100-form-title">Sign Up</span></button>
+                    <canvas id="defaultIcon" width="120" height="120" style="display: none;"></canvas>
+                </center>
             </div>
+            <div>
+                <span class="login100-form-title" style="color: #555555;">
+                    By Yifeng Mao, Zitong Zhu
+                </span></div>
+        </div>
         </div>
     </body>
     <script src="/javascripts/StaticPage.js"></script>

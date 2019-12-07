@@ -67,7 +67,7 @@ if (document.getElementById('close-comment') != null) {
 
 // Clear deconste dialog when deconstion is done
 function clearDelPostModal() {
-  const delPostId = document.getElementById('deconste-post-id');
+  const delPostId = document.getElementById('delete-post-id');
   delPostId.innerHTML = '';
   window.location.reload();
 }
@@ -77,7 +77,7 @@ if (document.getElementById('close-del-post') != null) {
 
 
 function clearDelCommentModal() {
-  const delCmtId = document.getElementById('deconste-comment-id');
+  const delCmtId = document.getElementById('delete-comment-id');
   delCmtId.innerHTML = '';
   window.location.reload();
 }

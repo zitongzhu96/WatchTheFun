@@ -3,7 +3,7 @@
 // This file includes controller on likes, comments
 var app = angular.module('MyApp'); // eslint-disable-line
 
-app.controller('dynamicController', ($scope, $http) => {
+app.controller('dynamicController', function($scope, $http){// eslint-disable-line
   const hrefList = window.location.href.split('/');
 
   $scope.addLike = ($event) => {

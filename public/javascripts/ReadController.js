@@ -2,16 +2,16 @@
 // [] after 'Myapp' should be omitted
 var app = angular.module('MyApp');// eslint-disable-line
 
-app.controller('readController', ($scope, $http) => {
+app.controller('readController', function($scope, $http){// eslint-disable-line
   const hrefList = window.location.href.split('/');
   // inject likes, comments, post contents, icons
   $http({
     url: '/injectAll',
-    method: 'POST',
+    method: 'GET',
     headers: {
       token: sessionStorage.token,
     },
-    data: {
+    params: {
       username: hrefList[hrefList.length - 1],
     },
   }).then(
@@ -97,11 +97,11 @@ app.controller('readController', ($scope, $http) => {
   $scope.addIcon = () => {
     $http({
       url: '/addIcon',
-      method: 'POST',
+      method: 'GET',
       headers: {
         token: sessionStorage.token,
       },
-      data: {
+      params: {
         user: hrefList[hrefList.length - 1],
       },
     }).then(
@@ -121,11 +121,11 @@ app.controller('readController', ($scope, $http) => {
 
   $http({
     url: '/following',
-    method: 'POST',
+    method: 'GET',
     headers: {
       token: sessionStorage.token,
     },
-    data: {
+    params: {
       username: hrefList[hrefList.length - 1],
     },
   }).then(
@@ -139,11 +139,11 @@ app.controller('readController', ($scope, $http) => {
 
   $http({
     url: '/follower',
-    method: 'POST',
+    method: 'GET',
     headers: {
       token: sessionStorage.token,
     },
-    data: {
+    params: {
       username: hrefList[hrefList.length - 1],
     },
   }).then(
@@ -159,17 +159,17 @@ app.controller('readController', ($scope, $http) => {
     const username = hrefList[hrefList.length - 1];
     $http({
       url: `/goFollowing/${followGuest}`,
-      method: 'POST',
-      data: {
+      method: 'GET',
+      params: {
         username,
         followGuest,
       },
     }).then(
       (res) => {
         if (res.data.status === 'success') {
-          window.location.href = `../GuestProfile/${followGuest}/${username}`;
+          window.location.href.assign(`../GuestProfile/${followGuest}/${username}`);
         } else if (res.data.status === 'myself') {
-          window.location.href = `../Profile/${username}`;
+          window.location.href.assign(`../Profile/${username}`);
         }
       }, (err) => {
         console.log('Find profile ERROR: ', err.data.info);
@@ -181,20 +181,20 @@ app.controller('readController', ($scope, $http) => {
     const username = hrefList[hrefList.length - 1];
     $http({
       url: `/goFollowing/${followHost}`,
-      method: 'POST',
+      method: 'GET',
       headers: {
         token: sessionStorage.token,
       },
-      data: {
+      params: {
         username,
         followHost,
       },
     }).then(
       (res) => {
         if (res.data.status === 'success') {
-          window.location.href = `../GuestProfile/${followHost}/${username}`;
+          window.location.href.assign(`../GuestProfile/${followHost}/${username}`);
         } else if (res.data.status === 'myself') {
-          window.location.href = `../Profile/${username}`;
+          window.location.href.assign(`../Profile/${username}`);
         }
       }, (err) => {
         console.log('Find profile ERROR: ', err.data.info);
@@ -204,11 +204,11 @@ app.controller('readController', ($scope, $http) => {
 
   $http({
     url: '/suggestFriend',
-    method: 'POST',
+    method: 'GET',
     headers: {
       token: sessionStorage.token,
     },
-    data: {
+    params: {
       username: hrefList[hrefList.length - 1],
     },
   }).then(

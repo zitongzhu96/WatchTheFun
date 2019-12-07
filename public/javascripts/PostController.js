@@ -1,6 +1,6 @@
 var app = angular.module('MyApp', ['file-model','ngSanitize']);// eslint-disable-line
 
-app.controller('postController', ($scope, $http) => {
+app.controller('postController', function($scope, $http){// eslint-disable-line
   $scope.addPost = () => {
     const hrefList = window.location.href.split('/');
     const now = new Date();
@@ -50,7 +50,7 @@ app.controller('postController', ($scope, $http) => {
         token: sessionStorage.token,
       },
       data: {
-        user: hrefList[hrefList.length - 1],
+        username: hrefList[hrefList.length - 1],
         pic: document.getElementById('preview-image').src,
         txt: text,
         date: dt,

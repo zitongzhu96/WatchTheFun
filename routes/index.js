@@ -61,13 +61,18 @@ const verifyToken = (req, res, next) => {
 // session verification
 const verifySession = (req, res, next) => {
   const currTime = new Date().getTime();
-  console.log(req.session);
-  console.log(req.session.host);
-  console.log(req.session.sess_end - currTime);
-  if (req.session && req.session.host === req.body.username
-    && req.session.sess_end - currTime > 0) {
-    console.log('Action authenticated in valid session.');
-    return next();
+  if (req.session) {
+    if (req.body.username) {
+      if (req.session.host === req.body.username && req.session.sess_end - currTime > 0) {
+        console.log('Action authenticated in valid session.');
+        return next();
+      }
+    } else if (req.query.username) {
+      if (req.session.host === req.query.username && req.session.sess_end - currTime > 0) {
+        console.log('Action authenticated in valid session.');
+        return next();
+      }
+    }
   }
   return res.status(401);
 };
@@ -82,7 +87,7 @@ function noCache(req, res, next) {
 // router functionality
 // start counting login time of the session
 router.get('/', noCache, (req, res) => {
-  req.session.login_time = 0;
+  req.session.loginTime = 0;
   const now = new Date().getTime();
   req.session.sess_end = now + req.session.cookie.maxAge;
   res.sendFile(path.join(__dirname, '../', 'views', 'Login.html'));
@@ -90,7 +95,7 @@ router.get('/', noCache, (req, res) => {
 });
 
 router.get('/Login', noCache, (req, res) => {
-  req.session.login_time = 0;
+  req.session.loginTime = 0;
   const now = new Date().getTime();
   req.session.sess_end = now + req.session.cookie.maxAge;
   res.sendFile(path.join(__dirname, '../', 'views', 'Login.html'));
@@ -168,7 +173,7 @@ router.post('/login', (req, res) => {
   const username = req.body.user;
   const pwd = req.body.password;
   const re = /^[0-9a-zA-Z]*$/;
-  const date = req.body.dateNow;
+  const date = new Date();
   const check = 'SELECT password FROM user_info WHERE username = ?';
   const getStatus = 'SELECT status,tryDate FROM user_info WHERE username = ?';
   connection.query(getStatus, [username], (errGetStatus, statusResult) => {
@@ -202,7 +207,7 @@ router.post('/login', (req, res) => {
           }
         });
       }
-      if (countStatus === 'active' || diff > 1) {
+      if ((req.session.loginTime < 3) && (countStatus === 'active' || diff > 1)) {
         if (pwd.length > 0) {
           if (re.test(username) && username.length >= 4 && username.length <= 12) {
             connection.query('UPDATE user_info SET tryDate=? WHERE username=? ;', [date, username], (errLoginUpdate) => {
@@ -256,6 +261,7 @@ router.post('/login', (req, res) => {
                     res4.sendFile(path.join(__dirname, '../', 'views', 'Login.html'));
                   });
                 } else {
+                  req.session.loginTime += 1;
                   res.status(401).json({
                     status: 'fail',
                     info: 'Password incorrect',
@@ -264,29 +270,40 @@ router.post('/login', (req, res) => {
               }
             });
           } else {
+            req.session.loginTime += 1;
             res.status(400).json({
               status: 'illegal',
               info: 'Illegal username',
             });
           }
         } else {
+          req.session.loginTime += 1;
           res.status(400).json({
             status: 'nullpwd',
             info: 'Password Empty',
           });
         }
       } else {
-        res.status(403).json({
-          status: 'locked',
-          info: 'Account has been locked',
+        connection.query('UPDATE user_info SET tryDate=?,status="inactive" WHERE username=? ;', [date, username], (errUnlockUpdateStatus) => {
+          if (errUnlockUpdateStatus) {
+            res.status(500).json({
+              status: 'error',
+              info: errUnlockUpdateStatus,
+            });
+          } else {
+            res.status(403).json({
+              status: 'locked',
+              info: 'Account has been locked',
+            });
+          }
         });
       }
     }
   });
 });
 
-router.post('/newPost', (req, res) => {
-  const username = req.body.user;
+router.post('/newPost', [verifySession, verifyToken, noCache], (req, res) => {
+  const user = req.body.username;
   const time = req.body.date;
   let text = req.body.txt;
   if (text === undefined) {
@@ -297,7 +314,7 @@ router.post('/newPost', (req, res) => {
   const tags = req.body.tag;
   const add = 'INSERT INTO post_content (username, time, text, picture, post_id) VALUES (?,?,?,?,?);';
   const tagging = 'INSERT INTO `tag` (tagged_user, post_id) VALUES (?) ;';
-  connection.query(add, [username, time, text, picture, postId], (errAdd) => {
+  connection.query(add, [user, time, text, picture, postId], (errAdd) => {
     if (errAdd) {
       res.status(500).json({
         status: 'error',
@@ -325,8 +342,8 @@ router.post('/newPost', (req, res) => {
   });
 });
 
-router.post('/addIcon', (req, res) => {
-  const username = req.body.user;
+router.get('/addIcon', (req, res) => {
+  const username = req.query.user;
   const addIcon = 'SELECT icon FROM user_info WHERE username = ?';
   connection.query(addIcon, [username], (errAddIcon, result) => {
     if (errAddIcon) {
@@ -343,8 +360,8 @@ router.post('/addIcon', (req, res) => {
   });
 });
 
-router.post('/injectMain', (req, res) => {
-  const followHost = req.body.username;
+router.get('/injectMain', (req, res) => {
+  const followHost = req.query.username;
   const injectMain = 'SELECT * FROM post_content WHERE username = ?;';
   connection.query(injectMain, [followHost], (err, result) => {
     if (err) {
@@ -355,49 +372,54 @@ router.post('/injectMain', (req, res) => {
       const readComment = 'SELECT * FROM comment WHERE post_id IN (?) ;';
       // read likes from likes table, read comments from comment table
       const posts = [];
-      console.log(posts);
-      console.log(followHost);
       for (let index = 0; index < result.length; index += 1) {
         const currPost = result[index].post_id;
         posts.push(currPost);
       }
-      connection.query(readLike, [posts, followHost], (errLike, likes) => {
-        if (errLike) {
-          res.status(404).json({
-            info: `Likes not found: ${errLike}`,
-          });
-        } else {
-          connection.query(readComment, [posts], (errCom, comments) => {
-            if (errCom) {
-              res.status(404).json({
-                info: `Comment not found: ${errCom}`,
-              });
-            } else {
-              connection.query(readCount, [posts], (errCount, counts) => {
-                if (errCount) {
-                  res.status(404).json({
-                    info: `like counting error: ${errCount}`,
-                  });
-                } else {
-                  res.status(200).json({
-                    status: 'success',
-                    result,
-                    like: likes,
-                    count: counts,
-                    comment: comments,
-                  });
-                }
-              });
-            }
-          });
-        }
-      });
+      if (posts.length > 0) {
+        connection.query(readLike, [posts, followHost], (errLike, likes) => {
+          if (errLike) {
+            res.status(404).json({
+              info: `Likes not found: ${errLike}`,
+            });
+          } else {
+            connection.query(readComment, [posts], (errCom, comments) => {
+              if (errCom) {
+                res.status(404).json({
+                  info: `Comment not found: ${errCom}`,
+                });
+              } else {
+                connection.query(readCount, [posts], (errCount, counts) => {
+                  if (errCount) {
+                    res.status(404).json({
+                      info: `like counting error: ${errCount}`,
+                    });
+                  } else {
+                    res.status(200).json({
+                      status: 'success',
+                      result,
+                      like: likes,
+                      count: counts,
+                      comment: comments,
+                    });
+                  }
+                });
+              }
+            });
+          }
+        });
+      } else {
+        res.status(500).json({
+          status: 'no post',
+          info: 'No post founded for this user',
+        });
+      }
     }
   });
 });
 
-router.post('/injectAll', [verifySession, verifyToken, noCache], (req, res) => {
-  const followHost = req.body.username;
+router.get('/injectAll', (req, res) => {
+  const followHost = req.query.username;
   const allGuests = 'SELECT follow_guest FROM follow WHERE follow_host = ?;';
   // read followers from follow table
   connection.query(allGuests, [followHost], (err, guests) => {
@@ -414,7 +436,7 @@ router.post('/injectAll', [verifySession, verifyToken, noCache], (req, res) => {
       // read posts from post_content table
       connection.query(injectAll, [usernames], (errRes, result) => {
         if (errRes) {
-          console.log('injection error: ');
+          console.log('injection error: ', errRes);
         } else {
           const readLike = 'SELECT * FROM likes WHERE post_id IN (?) ;';
           const readCount = 'SELECT post_id, COUNT(*) AS num FROM likes WHERE post_id IN (?) GROUP BY post_id;';
@@ -422,7 +444,7 @@ router.post('/injectAll', [verifySession, verifyToken, noCache], (req, res) => {
           const readTag = 'SELECT * FROM tag WHERE post_id IN (?) ;';
           connection.query(postIcon, [usernames], (errIcon, icon) => {
             if (errIcon) {
-              console.log('icons not found: ');
+              console.log('icons not found: ', errIcon);
             } else {
               // read likes from likes table, read comments from comment table
               const taggedIds = [];
@@ -434,7 +456,7 @@ router.post('/injectAll', [verifySession, verifyToken, noCache], (req, res) => {
               }
               connection.query(readLike, [currPosts], (errLikes, likes) => {
                 if (errLikes) {
-                  res.status(404).json({
+                  res.status(500).json({
                     info: 'likes not in Database.',
                   });
                 } else {
@@ -443,7 +465,6 @@ router.post('/injectAll', [verifySession, verifyToken, noCache], (req, res) => {
                       res.status(500).json({
                         info: 'comments not in Database ',
                       });
-                      console.log('comments not found');
                     } else {
                       connection.query(readCount, [currPosts], (errPost, counts) => {
                         if (errPost) {
@@ -482,8 +503,8 @@ router.post('/injectAll', [verifySession, verifyToken, noCache], (req, res) => {
   });
 });
 
-router.post('/following', noCache, (req, res) => {
-  const username1 = req.body.username;
+router.get('/following', noCache, (req, res) => {
+  const username1 = req.query.username;
   const query = 'SELECT follow_guest FROM follow WHERE follow_host=?;';
   connection.query(query, [username1], (err, rows) => {
     if (err) {
@@ -496,8 +517,8 @@ router.post('/following', noCache, (req, res) => {
   });
 });
 
-router.post('/follower', noCache, (req, res) => {
-  const username1 = req.body.username;
+router.get('/follower', noCache, (req, res) => {
+  const username1 = req.query.username;
   const query = 'SELECT follow_host FROM follow WHERE follow_guest=? ;';
   connection.query(query, [username1], (err, rows) => {
     if (err) {
@@ -510,9 +531,9 @@ router.post('/follower', noCache, (req, res) => {
   });
 });
 
-router.post('/searchUser', [verifySession, verifyToken, noCache], (req, res) => {
-  const username1 = req.body.username;
-  const searchname1 = req.body.searchname;
+router.get('/searchUser', [verifySession, verifyToken, noCache], (req, res) => {
+  const username1 = req.query.username;
+  const searchname1 = req.query.searchname;
   const check = 'SELECT username FROM user_info WHERE username = ?;';
   connection.query(check, [searchname1], (err, result) => {
     if (err) {
@@ -534,29 +555,6 @@ router.post('/searchUser', [verifySession, verifyToken, noCache], (req, res) => 
         res.status(201).json({
           status: 'success',
           user: searchname1,
-        });
-      }
-    }
-  });
-});
-router.post('/followStatus', noCache, (req, res) => {
-  const host = req.body.followHost;
-  const guest = req.body.followGuest;
-  const checkFollow = 'SELECT * FROM follow WHERE follow_guest = ? AND follow_host = ?;';
-  connection.query(checkFollow, [guest, host], (err, result) => {
-    if (err) {
-      res.status(500).json({
-        info: 'Database error',
-      });
-    } else {
-      const message = JSON.stringify(result);
-      if (message.length === 2) {
-        res.status(200).json({
-          status: 'unfollow',
-        });
-      } else {
-        res.status(200).json({
-          status: 'followed',
         });
       }
     }
@@ -617,7 +615,7 @@ router.post('/addLike', [verifySession, verifyToken, noCache], (req, res) => {
   });
 });
 
-router.post('/cancelLike', [verifySession, verifyToken, noCache], (req, res) => {
+router.put('/cancelLike', [verifySession, verifyToken, noCache], (req, res) => {
   const postId = req.body.post_id;
   const username1 = req.body.username;
   const cancelLike = 'DELETE FROM likes WHERE username= ? AND post_id = ?;';
@@ -653,9 +651,9 @@ router.post('/addComment', [verifySession, verifyToken, noCache], (req, res) => 
   });
 });
 
-router.post('/goFollowing/:followGuest', (req, res) => {
-  const host = req.body.username;
-  const guest = req.body.followGuest;
+router.get('/goFollowing/:followGuest', (req, res) => {
+  const host = req.query.username;
+  const guest = req.query.followGuest;
   if (guest === host) {
     res.status(200).json({ status: 'myself' });
   } else {
@@ -666,16 +664,15 @@ router.post('/goFollowing/:followGuest', (req, res) => {
   }
 });
 
-router.post('/countPost', noCache, (req, res) => {
-  const username1 = req.body.username;
+router.get('/countPost', noCache, (req, res) => {
+  const username1 = req.query.username;
   const countPost = 'SELECT COUNT(*) AS countPost FROM post_content WHERE username= ? GROUP BY username;';
   connection.query(countPost, [username1], (err, count) => {
-    console.log(count[0].countPost);
     if (err) {
       res.status(500).json({
         info: 'Database error',
       });
-    } else if (count[0].countPost > 0) {
+    } else if (count.length > 0) {
       res.status(200).json(count);
     } else {
       res.status(200).json([{
@@ -685,8 +682,8 @@ router.post('/countPost', noCache, (req, res) => {
   });
 });
 
-router.post('/countFollowing', noCache, (req, res) => {
-  const username1 = req.body.username;
+router.get('/countFollowing', noCache, (req, res) => {
+  const username1 = req.query.username;
   const countfollowing = 'SELECT COUNT(*) AS countFollowing FROM follow WHERE follow_guest= ? GROUP BY follow_guest;';
   connection.query(countfollowing, [username1], (err, rows) => {
     if (err) {
@@ -703,8 +700,8 @@ router.post('/countFollowing', noCache, (req, res) => {
   });
 });
 
-router.post('/countFollower', noCache, (req, res) => {
-  const username1 = req.body.username;
+router.get('/countFollower', noCache, (req, res) => {
+  const username1 = req.query.username;
   const countfollower = 'SELECT COUNT(*) AS countFollower FROM follow WHERE follow_host=? GROUP BY follow_host;';
   connection.query(countfollower, [username1], (err, rows) => {
     if (err) {
@@ -758,8 +755,8 @@ router.post('/followSuggest', noCache, (req, res) => {
   }
 });
 
-router.post('/suggestFriend', noCache, (req, res) => {
-  const username1 = req.body.username;
+router.get('/suggestFriend', noCache, (req, res) => {
+  const username1 = req.query.username;
   const suggest = `SELECT username, icon FROM user_info 
   WHERE (username, icon) not in
   (SELECT ui.username, ui.icon FROM user_info ui,follow f WHERE f.follow_host=? AND f.follow_guest=ui.username)

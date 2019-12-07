@@ -1,25 +1,25 @@
 var app = angular.module('MyApp',[]);// eslint-disable-line
 
-app.controller('searchController', ($scope, $http) => {
+app.controller('searchController', function($scope, $http){// eslint-disable-line
   $scope.searchUser = () => {
     const hrefList = window.location.href.split('/');
     const username = hrefList[hrefList.length - 1];
     $http({
       url: '/searchUser',
-      method: 'POST',
+      method: 'GET',
       headers: {
         token: sessionStorage.token,
       },
-      data: {
+      params: {
         searchname: $scope.searchname,
         username: hrefList[hrefList.length - 1],
       },
     }).then(
       (res) => {
         if (res.data.status === 'success') {
-          window.location.href = `../GuestProfile/${res.data.user}/${username}`;
+          window.location.assign(`../GuestProfile/${res.data.user}/${username}`);
         } else if (res.data.status === 'myself') {
-          window.location.href = `../Profile/${username}`;
+          window.location.assign(`../Profile/${username}`);
         }
       }, (err) => {
         if (err.data.status === 'unexist') {
@@ -35,11 +35,11 @@ app.controller('friendlistController', ($scope, $http) => {
   const hrefList = window.location.href.split('/');
   $http({
     url: '/following',
-    method: 'POST',
+    method: 'GET',
     headers: {
       token: sessionStorage.token,
     },
-    data: {
+    params: {
       username: hrefList[hrefList.length - 1],
     },
   }).then(
@@ -53,11 +53,11 @@ app.controller('friendlistController', ($scope, $http) => {
 
   $http({
     url: '/follower',
-    method: 'POST',
+    method: 'GET',
     headers: {
       token: sessionStorage.token,
     },
-    data: {
+    params: {
       username: hrefList[hrefList.length - 1],
     },
   }).then(
@@ -73,17 +73,17 @@ app.controller('friendlistController', ($scope, $http) => {
     const username = hrefList[hrefList.length - 1];
     $http({
       url: `/goFollowing/${followGuest}`,
-      method: 'POST',
-      data: {
+      method: 'GET',
+      params: {
         username,
         followGuest,
       },
     }).then(
       (res) => {
         if (res.data.status === 'success') {
-          window.location.href = `../GuestProfile/${followGuest}/${username}`;
+          window.location.assign(`../GuestProfile/${followGuest}/${username}`);
         } else if (res.data.status === 'myself') {
-          window.location.href = `../Profile/${username}`;
+          window.location.assign(`../Profile/${username}`);
         }
       }, (err) => {
         console.log('Find profile ERROR: ', err.data.info);
@@ -95,20 +95,20 @@ app.controller('friendlistController', ($scope, $http) => {
     const username = hrefList[hrefList.length - 1];
     $http({
       url: `/goFollowing/${followHost}`,
-      method: 'POST',
+      method: 'GET',
       headers: {
         token: sessionStorage.token,
       },
-      data: {
+      params: {
         username,
         followHost,
       },
     }).then(
       (res) => {
         if (res.data.status === 'success') {
-          window.location.href = `../GuestProfile/${followHost}/${username}`;
+          window.location.href.assign(`../GuestProfile/${followHost}/${username}`);
         } else if (res.data.status === 'myself') {
-          window.location.href = `../Profile/${username}`;
+          window.location.assign(`../Profile/${username}`);
         }
       }, (err) => {
         console.log('Find profile ERROR: ', err.data.info);
@@ -121,11 +121,11 @@ app.controller('suggestController', ($scope, $http) => {
   const hrefList = window.location.href.split('/');
   $http({
     url: '/suggestFriend',
-    method: 'POST',
+    method: 'GET',
     headers: {
       token: sessionStorage.token,
     },
-    data: {
+    params: {
       username: hrefList[hrefList.length - 1],
     },
   }).then(

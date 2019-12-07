@@ -1,6 +1,6 @@
 const app = angular.module('MyApp', []);// eslint-disable-line
 
-app.controller('loginController', ($scope, $http) => {
+app.controller('loginController', function($scope, $http){// eslint-disable-line
   $scope.verifyLogin = () => {
     // To check in the console if the variables are correctly storing the input:
     $http({
@@ -9,7 +9,6 @@ app.controller('loginController', ($scope, $http) => {
       data: {
         user: $scope.username,
         password: $scope.password,
-        dateNow: new Date().getTime(),
       },
     }).then(
       (res) => {
@@ -18,7 +17,7 @@ app.controller('loginController', ($scope, $http) => {
             sessionStorage.removeItem('token');
           }
           sessionStorage.token = res.data.token;
-          window.location.href = `./MainPage/${res.data.user}`;
+          window.location.assign(`./MainPage/${res.data.user}`);
         }
       }, (err) => {
         if (err.data.status === 'unexist') {
@@ -34,22 +33,22 @@ app.controller('loginController', ($scope, $http) => {
           $scope.username = '';
           $scope.password = '';
         } else if (err.data.status === 'illegal') {
-          alert('The username can only be 4-12 characters and numbers')
+          alert('The username can only be 4-12 characters and numbers');
           document.getElementById('name').value = '';
           document.getElementById('pwd').value = '';
           $scope.username = '';
           $scope.password = '';
-        } else if (err.data.status=='nullpwd') {
-          alert('Password cannot be empty')
+        } else if (err.data.status === 'nullpwd') {
+          alert('Password cannot be empty');
           document.getElementById('name').value = '';
           document.getElementById('pwd').value = '';
           $scope.username = '';
           $scope.password = '';
-        } else if (err.data.status=='fail') {
+        } else if (err.data.status === 'fail') {
           alert('Password incorrect, please try again!');
           document.getElementById('pwd').value = '';
           $scope.password = '';
-        } else if (err.data.status=='locked') {
+        } else if (err.data.status === 'locked') {
           alert('Your account has been lock, please wait!');
           document.getElementById('name').value = '';
           document.getElementById('pwd').value = '';
