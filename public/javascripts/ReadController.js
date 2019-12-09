@@ -1,6 +1,13 @@
+/* eslint-disable linebreak-style */
+// eslint-disable-next-line linebreak-style
 // Continue using the previous dependencies
 // [] after 'Myapp' should be omitted
-var app = angular.module('MyApp');// eslint-disable-line
+try {
+  app = angular.module('MyApp');// eslint-disable-line
+} catch (error) {
+  app = angular.module('MyApp', []);// eslint-disable-line
+}
+
 
 app.controller('readController', function($scope, $http){// eslint-disable-line
   const hrefList = window.location.href.split('/');
@@ -22,7 +29,8 @@ app.controller('readController', function($scope, $http){// eslint-disable-line
         const like1 = res.data.like;
         const count1 = res.data.count;
         const comment1 = res.data.comment;
-        const tags1 = res.data.tags;
+        const tags1 = res.data.postTag;
+        const tags2 = res.data.commentTag;
         const likeIds = [];
         for (let index = 0; index < Object.keys(like1).length; index += 1) {
           likeIds.push(like1[index].post_id);
@@ -34,7 +42,6 @@ app.controller('readController', function($scope, $http){// eslint-disable-line
               break;
             }
           }
-
           // like_btn assignment
           if (likeIds.includes(result1[index1].post_id)) {
             result1[index1].liked = ' Liked';
@@ -61,11 +68,20 @@ app.controller('readController', function($scope, $http){// eslint-disable-line
             if (comment1[index4].post_id === result1[index1].post_id) {
               const temp = comment1[index4].cmt_id.split('by')[0];
               comment1[index4].time = temp.substring(10, temp.length);
+              for (let index6 = 0; index6 < Object.keys(tags2).length; index6 += 1) {
+                if (tags2[index6].tagged_user === hrefList[hrefList.length - 1] && comment1[index4].cmt_id === tags2[index6].cmt_id) {// eslint-disable-line
+                  comment1[index4].tagged = 'Mentions you';
+                  comment1[index4].style = 'background-color:pink; font-color:orange';
+                } else {
+                  comment1[index4].tagged = '';
+                  comment1[index4].style = '';
+                }
+              }
               result1[index1].commentList.push(comment1[index4]);
             }
           }
 
-          // tags assignment
+          // post tags assignment
           let tempTagged = false;
           for (let index5 = 0; index5 < Object.keys(tags1).length; index5 += 1) {
             if ((result1[index1].post_id === tags1[index5].post_id)
@@ -94,6 +110,7 @@ app.controller('readController', function($scope, $http){// eslint-disable-line
       console.log('Mainpage content loading error: ', err);
     },
   );
+
   $scope.addIcon = () => {
     $http({
       url: '/addIcon',
@@ -155,7 +172,7 @@ app.controller('readController', function($scope, $http){// eslint-disable-line
     },
   );
 
-  $scope.goProfile1 = (followGuest) => {
+  $scope.goProfile = (followGuest) => {
     const username = hrefList[hrefList.length - 1];
     $http({
       url: `/goFollowing/${followGuest}`,
@@ -167,34 +184,9 @@ app.controller('readController', function($scope, $http){// eslint-disable-line
     }).then(
       (res) => {
         if (res.data.status === 'success') {
-          window.location.href.assign(`../GuestProfile/${followGuest}/${username}`);
+          window.location.assign(`../GuestProfile/${followGuest}/${username}`);
         } else if (res.data.status === 'myself') {
-          window.location.href.assign(`../Profile/${username}`);
-        }
-      }, (err) => {
-        console.log('Find profile ERROR: ', err.data.info);
-      },
-    );
-  };
-
-  $scope.goProfile2 = (followHost) => {
-    const username = hrefList[hrefList.length - 1];
-    $http({
-      url: `/goFollowing/${followHost}`,
-      method: 'GET',
-      headers: {
-        token: sessionStorage.token,
-      },
-      params: {
-        username,
-        followHost,
-      },
-    }).then(
-      (res) => {
-        if (res.data.status === 'success') {
-          window.location.href.assign(`../GuestProfile/${followHost}/${username}`);
-        } else if (res.data.status === 'myself') {
-          window.location.href.assign(`../Profile/${username}`);
+          window.location.assign(`../Profile/${username}`);
         }
       }, (err) => {
         console.log('Find profile ERROR: ', err.data.info);
@@ -219,9 +211,9 @@ app.controller('readController', function($scope, $http){// eslint-disable-line
     },
   );
 
-  $scope.followUser = ($event) => {
-    const status = $event.event.currentTarget.innerHTML;
-    const button = $event.event.currentTarget;
+  $scope.followUser = (myEvent) => {
+    const status = myEvent.event.currentTarget.innerHTML;
+    const button = myEvent.event.currentTarget;
     console.log(status);
     $http({
       url: '/followSuggest',
@@ -231,7 +223,7 @@ app.controller('readController', function($scope, $http){// eslint-disable-line
       },
       data: {
         followHost: hrefList[hrefList.length - 1],
-        followGuest: $event.event.path[1].children[1].innerHTML,
+        followGuest: myEvent.event.path[1].children[1].innerHTML,
         status,
       },
     }).then(

@@ -45,13 +45,12 @@
                 <div id="user-info">
                     <img id="grid-user-photo"/> 
                     <div id="grid-username" ng-init="addIcon()"></div> 
-                    <button type="submit" id="search-btn" ng-click="followUser()"><p id="followbtn">Follow</p></button>
+                    <button type="submit" id="search-btn" ng-click="followUser()"><p id="followbtn"></p></button>
                 </div>
-                    
                 <div class="user-record">
-                        <div class="records">Posts<br><center><p id="numPosts"> </p></center></div>  
-                        <div class="records">Followers<br><center><p id="numFollowers"> </p></center></div>
-                        <div class="records">Following<br><center><p id="numFollowings"> </p></center></div>
+                        <div class="records">Posts<br><center></br><p id="numPosts"> </p></center></div>  
+                        <div class="records">Followers<br><center></br><p id="numFollowers"> </p></center></div>
+                        <div class="records">Following<br><center></br><p id="numFollowings"> </p></center></div>
                 </div> 
             </div>
             <div id="grid-main">
@@ -60,7 +59,7 @@
                     <div class="title">
                         <div class="person">
                             <div class="person-icon"></div>
-                            <p class="person-name">{{x.username}}</p>
+                            <span class="person-name">{{x.username}}</span>
                         </div>
                         <div class="post-time">{{x.time}}</div>
                     </div>

@@ -41,15 +41,18 @@
 
         <div id="grid-container" ng-controller="profileController">
             <div id="grid-profile">
+                <input type="file" id="dir" file-model="outimg" accept="image/gif,image/jpg,image/jpeg,image/png,image/tif,image/bmp" style="display: none;"/>
+                <div id='saved-img' style="display: none;"></div>
                 <div id="user-info">
-                    <img id="grid-user-photo"/> 
+                    <img id="grid-user-photo" ng-click="selectIcon()"/> 
                     <div id="grid-username" ng-init="addIcon()"></div> 
+                    <div id="upload-icon" ng-click="changeIcon()" style="display: none;"></div>
                 </div>
                 <div class="user-record">
-                    <div class="records">Posts<br><center><p id="numPosts"> </p></center></div>
-                    <div class="records">Followers<br><center><p id="numFollowers"> </p></center></div>
-                    <div class="records">Following<br><center><p id="numFollowings"> </p></center></div>
-                </div>  
+                        <div class="records">Posts<br><center></br><p id="numPosts"> </p></center></div>  
+                        <div class="records">Followers<br><center></br><p id="numFollowers"> </p></center></div>
+                        <div class="records">Following<br><center></br><p id="numFollowings"> </p></center></div>
+                </div> 
             </div>
 
             <div id="grid-main">

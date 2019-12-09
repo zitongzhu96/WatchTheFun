@@ -1,5 +1,5 @@
+/* eslint-disable linebreak-style */
 var app = angular.module('MyApp',[]); // eslint-disable-line
-
 app.controller('profileController', function($scope, $http){// eslint-disable-line
   const hrefList = window.location.href.split('/');
   $http({
@@ -86,9 +86,47 @@ app.controller('profileController', function($scope, $http){// eslint-disable-li
           const userIcon = document.getElementById('grid-user-photo');
           const iconValue = JSON.parse(res.data.result);
           userIcon.src = iconValue[0].icon;
+          if (document.getElementById('dir') != null) {
+            document.getElementById('dir').addEventListener('change', (event) => {
+              const reader = new FileReader();
+              reader.readAsDataURL(event.srcElement.files[0]);
+              reader.onload = () => {
+                const fileContent = reader.result;
+                document.getElementById('saved-img').setAttribute('innerHTML', fileContent);
+                document.getElementById('upload-icon').click();
+              };
+            });
+            userIcon.addEventListener('mouseover', () => {
+              userIcon.style.cursor = 'pointer';
+            });
+          }
         }
       }, (err) => {
         console.log('Icon loading error: ', err.data.info);
+      },
+    );
+  };
+
+  $scope.selectIcon = () => {
+    document.getElementById('dir').click();
+  };
+
+  $scope.changeIcon = () => {
+    $http({
+      url: '/changeIcon',
+      method: 'PUT',
+      headers: {
+        token: sessionStorage.token,
+      },
+      data: {
+        user: hrefList[hrefList.length - 1],
+        img: document.getElementById('saved-img').getAttribute('innerHTML'),
+      },
+    }).then(
+      () => {
+        window.location.reload();
+      }, (err) => {
+        console.log('Icon changing error: ', err.data.info);
       },
     );
   };
@@ -105,7 +143,7 @@ app.controller('profileController', function($scope, $http){// eslint-disable-li
   }).then(
     (res) => {
     // console.log(res.data);
-      document.getElementById('numPosts').innerHTML = res.data[0].countPost;
+      document.getElementById('numPosts').setAttribute('innerHTML', res.data[0].countPost);
     }, (err) => {
       console.log('Follow error: ', err.data.info);
     },
@@ -123,7 +161,7 @@ app.controller('profileController', function($scope, $http){// eslint-disable-li
   }).then(
     (res) => {
     // console.log(res.data);
-      document.getElementById('numFollowers').innerHTML = res.data[0].countFollower;
+      document.getElementById('numFollowers').setAttribute('innerHTML', res.data[0].countFollower);
     }, (err) => {
       console.log('Follow error: ', err.data.info);
     },
@@ -141,7 +179,7 @@ app.controller('profileController', function($scope, $http){// eslint-disable-li
   }).then(
     (res) => {
     // console.log(res.data);
-      document.getElementById('numFollowings').innerHTML = res.data[0].countFollowing;
+      document.getElementById('numFollowings').setAttribute('innerHTML', res.data[0].countFollowing);
     }, (err) => {
       console.log('Follow error: ', err.data.info);
     },

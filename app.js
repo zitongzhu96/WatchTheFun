@@ -9,23 +9,23 @@ const jwt = require('jsonwebtoken');
 const WebSocket = require('ws');
 
 // replace with passport token
-// const serverToken = jwt.sign({
-//   name: 'cis557server',
-//   team: ['Yifeng Mao', 'Zitong Zhu'],
-// }, 'watch_the_fun', { expiresIn: '1h' });
-// const wsUrl = 'ws://localhost:8082/';
-// const wsConnection = new WebSocket(wsUrl, {
-//   headers: { token: serverToken },
-// });
-// wsConnection.onopen = () => {
-//   wsConnection.send('["cis557server"]');
-// };
-// wsConnection.onerror = (err) => {
-//   console.log(`WebSocket error: ${err}`);
-// };
-// wsConnection.onmessage = (mess) => {
-//   console.log(mess.data);
-// };
+const serverToken = jwt.sign({
+  name: 'cis557server',
+  team: ['Yifeng Mao', 'Zitong Zhu'],
+}, 'watch_the_fun', { expiresIn: '1h' });
+const wsUrl = 'ws://localhost:8082/';
+const wsConnection = new WebSocket(wsUrl, {
+  headers: { token: serverToken },
+});
+wsConnection.onopen = () => {
+  wsConnection.send('["cis557server"]');
+};
+wsConnection.onerror = (err) => {
+  console.log(`WebSocket error: ${err}`);
+};
+wsConnection.onmessage = (mess) => {
+  console.log(mess.data);
+};
 
 const index = require('./routes/index');
 // var users = require('./routes/users');
