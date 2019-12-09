@@ -64,9 +64,9 @@ app.use((err, req, res) => {
   res.status(err.status || 500);
   res.render('Login');
 });
-
-app.listen('8081', () => {
-  console.log('Server running on port 8081');
-});
+app.listen(process.env.PORT || 5000);
+// app.listen('8081', () => {
+//   console.log('Server running on port 8081');
+// });
 
 module.exports = app;

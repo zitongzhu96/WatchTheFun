@@ -1,10 +1,11 @@
 {
-  "name": "asset",
+  "name": "watchthefun",
   "version": "1.0.0",
-  "description": "",
+  "description": "# Planning: User stories, Story points (6 points)",
   "main": "app.js",
   "scripts": {
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "start": "node app.js"
   },
   "author": "YFMao,ZTZhu",
   "license": "ISC",
@@ -49,5 +50,8 @@
     "jest-environment-webdriver": "^0.2.0",
     "jest-fetch-mock": "^2.1.2",
     "selenium-webdriver": "^4.0.0-alpha.5"
-  }
+  },
+  "keywords": [
+    "YfmaoZitongzh"
+  ]
 }
