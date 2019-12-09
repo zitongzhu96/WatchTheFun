@@ -1,14 +1,18 @@
 /* eslint-disable max-len */
 /* eslint-disable no-param-reassign */
 // This file includes controller on likes, comments
-var app = angular.module('MyApp'); // eslint-disable-line
+try {
+  app = angular.module('MyApp');// eslint-disable-line
+} catch (error) {
+  app = angular.module('MyApp', []);// eslint-disable-line
+}
 
 app.controller('dynamicController', function($scope, $http){// eslint-disable-line
   const hrefList = window.location.href.split('/');
 
-  $scope.addLike = ($event) => {
-    const postId = $event.event.path[4].firstElementChild.innerHTML;
-    const likeStatus = $event.event.path[1].lastElementChild.innerHTML;
+  $scope.addLike = (myEvent) => {
+    const postId = myEvent.event.path[4].firstElementChild.innerHTML;
+    const likeStatus = myEvent.event.path[1].lastElementChild.innerHTML;
     if (likeStatus === ' Like !') {
       // thenable functions, promises
       $http({
@@ -25,11 +29,11 @@ app.controller('dynamicController', function($scope, $http){// eslint-disable-li
       }).then(
         (res) => {
           if (res.data.status === 'success') {
-            $event.event.path[1].firstElementChild.setAttribute('class', 'fas fa-thumbs-up');
-            $event.event.path[1].lastElementChild.innerHTML = ' Liked';
-            $event.event.path[2].firstElementChild.style.backgroundColor = 'gold';
+            myEvent.event.path[1].firstElementChild.setAttribute('class', 'fas fa-thumbs-up');
+            myEvent.event.path[1].lastElementChild.innerHTML = ' Liked';
+            myEvent.event.path[2].firstElementChild.style.backgroundColor = 'gold';
             // eslint-disable-next-line max-len
-            $event.event.path[2].lastElementChild.firstElementChild.innerHTML = Number($event.event.path[2].lastElementChild.firstElementChild.innerHTML) + 1;
+            myEvent.event.path[2].lastElementChild.firstElementChild.innerHTML = Number(myEvent.event.path[2].lastElementChild.firstElementChild.innerHTML) + 1;
           }
         },
         (err) => {
@@ -51,10 +55,10 @@ app.controller('dynamicController', function($scope, $http){// eslint-disable-li
       }).then(
         (res) => {
           if (res.data.status === 'success') {
-            $event.event.path[1].firstElementChild.setAttribute('class', 'far fa-thumbs-up');
-            $event.event.path[1].lastElementChild.innerHTML = ' Like !';
-            $event.event.path[2].firstElementChild.style.backgroundColor = '';
-            $event.event.path[2].lastElementChild.firstElementChild.innerHTML = Number($event.event.path[2].lastElementChild.firstElementChild.innerHTML) - 1;
+            myEvent.event.path[1].firstElementChild.setAttribute('class', 'far fa-thumbs-up');
+            myEvent.event.path[1].lastElementChild.innerHTML = ' Like !';
+            myEvent.event.path[2].firstElementChild.style.backgroundColor = '';
+            myEvent.event.path[2].lastElementChild.firstElementChild.innerHTML = Number(myEvent.event.path[2].lastElementChild.firstElementChild.innerHTML) - 1;
           }
         },
         (err) => {
@@ -64,25 +68,25 @@ app.controller('dynamicController', function($scope, $http){// eslint-disable-li
     }
   };
 
-  $scope.sendPostID = ($event) => {
-    const currTarget = $event.event.currentTarget;
+  $scope.sendPostID = (myEvent) => {
+    const currTarget = myEvent.event.currentTarget;
     if (currTarget.getAttribute('data-target') === '#new-comment') {
-      const postId = $event.event.path[4].firstElementChild.innerHTML;
-      document.getElementById('chat-post-id').innerHTML = postId;
+      const postId = myEvent.event.path[4].firstElementChild.innerHTML;
+      document.getElementById('chat-post-id').setAttribute('innerHTML', postId);
     } else if (currTarget.getAttribute('data-target') === '#delete-post') {
-      const postId = $event.event.path[2].firstElementChild.innerHTML;
-      document.getElementById('delete-post-id').innerHTML = postId;
+      const postId = myEvent.event.path[2].firstElementChild.innerHTML;
+      document.getElementById('delete-post-id').setAttribute('innerHTML', postId);
     } else if (currTarget.getAttribute('data-target') === '#delete-comment') {
-      const commentId = $event.event.path[1].firstElementChild.innerHTML;
-      document.getElementById('delete-comment-id').innerHTML = commentId;
+      const commentId = myEvent.event.path[1].firstElementChild.innerHTML;
+      document.getElementById('delete-comment-id').setAttribute('innerHTML', commentId);
     } else {
       console.log('Send post ID error');
     }
   };
 
-  $scope.addComment = ($event) => {
-    const postId = $event.event.path[2].firstElementChild.innerHTML;
-    const text = $event.event.path[2].children[2].firstElementChild.value;
+  $scope.addComment = (myEvent) => {
+    const postId = myEvent.event.path[2].firstElementChild.innerHTML;
+    const text = myEvent.event.path[2].children[2].firstElementChild.value;
     const now = new Date();
     const year = now.getFullYear();
     let month = now.getMonth() + 1;
@@ -111,7 +115,18 @@ app.controller('dynamicController', function($scope, $http){// eslint-disable-li
     daymap.set(6, 'Saturday');
     daymap.set(0, 'Sunday');
     const dt = `${year}.${month}.${date}, ${hour}:${minute}, ${daymap.get(day)}`;
-    const cmtId = `comment on ${dt} by hrefList[hrefList.length-1] of ${postId}`;
+    const cmtId = `comment on ${dt} by ${hrefList[hrefList.length - 1]} of ${postId}`;
+
+    const tempTags = text.split('@');
+    const tags = [];
+    if (tempTags.length > 0) {
+      for (let index = 1; index < tempTags.length; index += 1) {
+        const tempUsername = tempTags[index].replace(/\W.*$/, '').replace(/ .*$/, '');
+        if (tags.includes(tempUsername) === false) {
+          tags.push([tempUsername, cmtId]);
+        }
+      }
+    }
     $http({
       url: '/addComment',
       method: 'POST',
@@ -123,6 +138,7 @@ app.controller('dynamicController', function($scope, $http){// eslint-disable-li
         username: hrefList[hrefList.length - 1],
         text,
         cmt_id: cmtId,
+        tagged: tags,
       },
     }).then(
       (res) => {
@@ -147,7 +163,7 @@ app.controller('dynamicController', function($scope, $http){// eslint-disable-li
         token: sessionStorage.token,
       },
       data: {
-        post_id: document.getElementById('delete-post-id').innerHTML,
+        post_id: document.getElementById('delete-post-id').getAttribute('innerHTML'),
         username: hrefList[hrefList.length - 1],
       },
     }).then(
@@ -171,7 +187,7 @@ app.controller('dynamicController', function($scope, $http){// eslint-disable-li
         token: sessionStorage.token,
       },
       data: {
-        comment_id: document.getElementById('delete-comment-id').innerHTML,
+        comment_id: document.getElementById('delete-comment-id').getAttribute('innerHTML'),
         username: hrefList[hrefList.length - 1],
       },
     }).then(
@@ -198,7 +214,7 @@ app.controller('dynamicController', function($scope, $http){// eslint-disable-li
       (res) => {
         if (res.data.status === 'logout') {
           sessionStorage.clear();
-          window.location.href = '../';
+          window.location.assign('../');
         }
       }, (err) => {
         console.log(`logout error: ${err.data.info}`);

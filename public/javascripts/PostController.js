@@ -1,6 +1,15 @@
-var app = angular.module('MyApp', ['file-model','ngSanitize']);// eslint-disable-line
+var app = angular.module('MyApp', []);// eslint-disable-line
 
 app.controller('postController', function($scope, $http){// eslint-disable-line
+  $scope.setPrivate = () => {
+    const privacy = document.getElementById('set-private');
+    if (privacy.getAttribute('innerHTML') === 'Set As Private') {
+      document.getElementById('set-private').setAttribute('innerHTML', 'Set As Public');
+    } else if (privacy.getAttribute('innerHTML') === 'Set As Public') {
+      document.getElementById('set-private').setAttribute('innerHTML', 'Set As Private');
+    }
+  };
+
   $scope.addPost = () => {
     const hrefList = window.location.href.split('/');
     const now = new Date();
@@ -31,7 +40,12 @@ app.controller('postController', function($scope, $http){// eslint-disable-line
     daymap.set(6, 'Saturday');
     daymap.set(0, 'Sunday');
     const dt = `${year}.${month}.${date}, ${hour}:${minute}, ${daymap.get(day)}`;
-
+    let privacy;
+    if (document.getElementById('set-private').innerHTML === 'Set As Private') {
+      privacy = 'All';
+    } else if (document.getElementById('set-private').innerHTML === 'Set As Public') {
+      privacy = 'Private';
+    }
     const text = document.getElementById('post-content').value;
     const tempTags = text.split('@');
     const tags = [];
@@ -56,6 +70,7 @@ app.controller('postController', function($scope, $http){// eslint-disable-line
         date: dt,
         postid: `${dt} by ${hrefList[hrefList.length - 1]}`,
         tag: tags,
+        privacy,
       },
     }).then(
       (res) => {
@@ -72,9 +87,8 @@ app.controller('postController', function($scope, $http){// eslint-disable-line
   };
 });
 
-// eslint-disable-next-line arrow-body-style
-app.filter('emoji', ($sce) => {
-// eslint-disable-next-line arrow-body-style
+app.filter('emoji', ($sce) => {// eslint-disable-line
+  // eslint-disable-next-line arrow-body-style
   return (val) => {
     return $sce.trustAsHtml(val);
   };

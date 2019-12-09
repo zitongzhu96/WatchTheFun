@@ -87,7 +87,7 @@ function noCache(req, res, next) {
 // router functionality
 // start counting login time of the session
 router.get('/', noCache, (req, res) => {
-  req.session.loginTime = 0;
+  req.session.loginTime = {};
   const now = new Date().getTime();
   req.session.sess_end = now + req.session.cookie.maxAge;
   res.sendFile(path.join(__dirname, '../', 'views', 'Login.html'));
@@ -95,7 +95,7 @@ router.get('/', noCache, (req, res) => {
 });
 
 router.get('/Login', noCache, (req, res) => {
-  req.session.loginTime = 0;
+  req.session.loginTime = {};
   const now = new Date().getTime();
   req.session.sess_end = now + req.session.cookie.maxAge;
   res.sendFile(path.join(__dirname, '../', 'views', 'Login.html'));
@@ -123,7 +123,7 @@ router.post('/register', (req, res) => {
   if (re2.test(pwd)) {
     if ((re.test(username)) && username.length >= 4 && username.length <= 12) {
       const check = 'SELECT password FROM user_info WHERE username = ?';
-      const register = "INSERT INTO user_info (username, password, icon,status,tryDate) VALUES (?,?,?,'active',?);";
+      const register = "INSERT INTO user_info (username, password, icon, status, tryDate) VALUES (?,?,?,'active',?);";
       connection.query(check, [username], (err, result) => {
         const message = JSON.stringify(result);
         if (message.length === 2) {
@@ -164,7 +164,7 @@ router.post('/register', (req, res) => {
   } else {
     res.status(400).json({
       status: 'nullpwd',
-      info: 'Password empty',
+      info: 'Password illegal',
     });
   }
 });
@@ -173,9 +173,12 @@ router.post('/login', (req, res) => {
   const username = req.body.user;
   const pwd = req.body.password;
   const re = /^[0-9a-zA-Z]*$/;
-  const date = new Date();
+  const date = new Date().getTime();
   const check = 'SELECT password FROM user_info WHERE username = ?';
   const getStatus = 'SELECT status,tryDate FROM user_info WHERE username = ?';
+  if (req.session.loginTime[username] === undefined) {
+    req.session.loginTime[username] = 0;
+  }
   connection.query(getStatus, [username], (errGetStatus, statusResult) => {
     const message1 = JSON.stringify(statusResult);
     if (errGetStatus) {
@@ -207,7 +210,7 @@ router.post('/login', (req, res) => {
           }
         });
       }
-      if ((req.session.loginTime < 3) && (countStatus === 'active' || diff > 1)) {
+      if ((req.session.loginTime[username] < 3) && (countStatus === 'active' || diff > 1)) {
         if (pwd.length > 0) {
           if (re.test(username) && username.length >= 4 && username.length <= 12) {
             connection.query('UPDATE user_info SET tryDate=? WHERE username=? ;', [date, username], (errLoginUpdate) => {
@@ -261,7 +264,7 @@ router.post('/login', (req, res) => {
                     res4.sendFile(path.join(__dirname, '../', 'views', 'Login.html'));
                   });
                 } else {
-                  req.session.loginTime += 1;
+                  req.session.loginTime[username] += 1;
                   res.status(401).json({
                     status: 'fail',
                     info: 'Password incorrect',
@@ -270,14 +273,14 @@ router.post('/login', (req, res) => {
               }
             });
           } else {
-            req.session.loginTime += 1;
+            req.session.loginTime[username] += 1;
             res.status(400).json({
               status: 'illegal',
               info: 'Illegal username',
             });
           }
         } else {
-          req.session.loginTime += 1;
+          req.session.loginTime[username] += 1;
           res.status(400).json({
             status: 'nullpwd',
             info: 'Password Empty',
@@ -312,9 +315,10 @@ router.post('/newPost', [verifySession, verifyToken, noCache], (req, res) => {
   const picture = req.body.pic;
   const postId = req.body.postid;
   const tags = req.body.tag;
-  const add = 'INSERT INTO post_content (username, time, text, picture, post_id) VALUES (?,?,?,?,?);';
-  const tagging = 'INSERT INTO `tag` (tagged_user, post_id) VALUES (?) ;';
-  connection.query(add, [user, time, text, picture, postId], (errAdd) => {
+  const limits = req.body.privacy;
+  const add = 'INSERT INTO post_content (username, time, text, picture, post_id, privacy) VALUES (?,?,?,?,?,?);';
+  const tagging = 'INSERT INTO `post_tag` (tagged_user, post_id) VALUES (?) ;';
+  connection.query(add, [user, time, text, picture, postId, limits], (errAdd) => {
     if (errAdd) {
       res.status(500).json({
         status: 'error',
@@ -344,7 +348,7 @@ router.post('/newPost', [verifySession, verifyToken, noCache], (req, res) => {
 
 router.get('/addIcon', (req, res) => {
   const username = req.query.user;
-  const addIcon = 'SELECT icon FROM user_info WHERE username = ?';
+  const addIcon = 'SELECT icon FROM user_info WHERE username = ?;';
   connection.query(addIcon, [username], (errAddIcon, result) => {
     if (errAddIcon) {
       res.status(500).json({
@@ -355,6 +359,25 @@ router.get('/addIcon', (req, res) => {
       res.status(200).json({
         status: 'success',
         result: JSON.stringify(result),
+      });
+    }
+  });
+});
+
+router.put('/changeIcon', (req, res) => {
+  const username = req.body.user;
+  const image = req.body.img;
+  const changeIcon = 'UPDATE user_info SET icon = ? WHERE username = ?;';
+  connection.query(changeIcon, [image, username], (errChangeIcon, stats) => {
+    if (errChangeIcon) {
+      res.status(500).json({
+        status: 'error',
+        info: 'Database update icon errer',
+      });
+    } else {
+      res.status(200).json({
+        status: 'success',
+        info: stats,
       });
     }
   });
@@ -421,71 +444,108 @@ router.get('/injectMain', (req, res) => {
 router.get('/injectAll', (req, res) => {
   const followHost = req.query.username;
   const allGuests = 'SELECT follow_guest FROM follow WHERE follow_host = ?;';
+  // bi-directional following <==> friends <==> private post readable
+  const allFriends = 'SELECT follow_host FROM follow WHERE follow_guest = ?;';
   // read followers from follow table
-  connection.query(allGuests, [followHost], (err, guests) => {
-    if (err) {
-      console.log('following guest error: ', err);
+  connection.query(allGuests, [followHost], (errGuests, guests) => {
+    if (errGuests) {
+      console.log('following guest error: ', errGuests);
     } else {
-      const injectAll = 'SELECT DISTINCT * FROM post_content WHERE username IN (?);';
-      const postIcon = 'SELECT DISTINCT  * FROM user_info WHERE username IN (?);';
-      const usernames = [];
-      for (let index = 0; index < guests.length; index += 1) {
-        const currUsername = guests[index].follow_guest;
-        usernames.push(currUsername);
-      }
-      // read posts from post_content table
-      connection.query(injectAll, [usernames], (errRes, result) => {
-        if (errRes) {
-          console.log('injection error: ', errRes);
+      connection.query(allFriends, [followHost], (errFriends, friends) => {
+        if (errFriends) {
+          console.log('friend members error: ', errFriends);
         } else {
-          const readLike = 'SELECT * FROM likes WHERE post_id IN (?) ;';
-          const readCount = 'SELECT post_id, COUNT(*) AS num FROM likes WHERE post_id IN (?) GROUP BY post_id;';
-          const readComment = 'SELECT * FROM comment WHERE post_id IN (?);';
-          const readTag = 'SELECT * FROM tag WHERE post_id IN (?) ;';
-          connection.query(postIcon, [usernames], (errIcon, icon) => {
-            if (errIcon) {
-              console.log('icons not found: ', errIcon);
-            } else {
-              // read likes from likes table, read comments from comment table
-              const taggedIds = [];
-              const currPosts = [];
-              for (let index = 0; index < result.length; index += 1) {
-                const currPost = result[index].post_id;
-                currPosts.push(currPost);
-                taggedIds.push(currPost);
+          const postIcon = `SELECT username, icon FROM user_info WHERE username IN (?) 
+            UNION 
+            SELECT username, icon FROM user_info WHERE username IN (?);`;
+          const injectAll = `SELECT post_id, username, picture, text, time FROM post_content WHERE username IN (?) 
+            UNION 
+            SELECT post_id, username, picture, text, time FROM post_content WHERE privacy = "all" AND username IN (?);`;
+          // Initialize two null string for prevent non-existence of followings
+          const followings = [''];
+          const privateFollowings = [''];
+          for (let index = 0; index < guests.length; index += 1) {
+            const currUsername = guests[index].follow_guest;
+            let isFriend = false;
+            for (let index0 = 0; index0 < friends.length; index0 += 1) {
+              if (friends[index0].follow_host === currUsername) {
+                privateFollowings.push(currUsername);
+                isFriend = true;
+                break;
               }
-              connection.query(readLike, [currPosts], (errLikes, likes) => {
-                if (errLikes) {
-                  res.status(500).json({
-                    info: 'likes not in Database.',
-                  });
+            }
+            if (isFriend === false) {
+              followings.push(currUsername);
+            }
+          }
+          // read posts from post_content table
+          connection.query(injectAll, [privateFollowings, followings], (errRes, result) => {
+            if (errRes) {
+              console.log('injection error: ', errRes);
+            } else {
+              const readLike = 'SELECT DISTINCT * FROM likes WHERE post_id IN (?) ;';
+              const readCount = 'SELECT post_id, COUNT(*) AS num FROM likes WHERE post_id IN (?) GROUP BY post_id;';
+              const readComment = 'SELECT DISTINCT * FROM comment WHERE post_id IN (?);';
+              const readPostTag = 'SELECT DISTINCT * FROM post_tag WHERE post_id IN (?) ;';
+              const readCmtTag = 'SELECT DISTINCT * FROM comment_tag WHERE cmt_id IN (?) ;';
+              connection.query(postIcon, [privateFollowings, followings], (errIcon, icon) => {
+                if (errIcon) {
+                  console.log('icons not found: ', errIcon);
                 } else {
-                  connection.query(readComment, [currPosts], (errComments, comments) => {
-                    if (errComments) {
+                  // read likes from likes table, read comments from comment table
+                  const taggedIds1 = [];
+                  for (let index = 0; index < result.length; index += 1) {
+                    const currPost = result[index].post_id;
+                    taggedIds1.push(currPost);
+                  }
+                  connection.query(readLike, [taggedIds1], (errLikes, likes) => {
+                    if (errLikes) {
                       res.status(500).json({
-                        info: 'comments not in Database ',
+                        info: 'likes not in Database.',
                       });
                     } else {
-                      connection.query(readCount, [currPosts], (errPost, counts) => {
-                        if (errPost) {
+                      connection.query(readComment, [taggedIds1], (errComments, comments) => {
+                        if (errComments) {
                           res.status(500).json({
-                            info: 'like counting error: ',
+                            info: 'comments not in Database ',
                           });
                         } else {
-                          connection.query(readTag, [taggedIds], (errTag, tags) => {
-                            if (errTag) {
+                          connection.query(readCount, [taggedIds1], (errPost, counts) => {
+                            if (errPost) {
                               res.status(500).json({
-                                info: 'tagging error',
+                                info: 'like counting error: ',
                               });
                             } else {
-                              res.json({
-                                status: 'success',
-                                result,
-                                icon,
-                                like: likes,
-                                count: counts,
-                                comment: comments,
-                                tags,
+                              connection.query(readPostTag, [taggedIds1], (errPostTag, postTags) => {// eslint-disable-line
+                                if (errPostTag) {
+                                  res.status(500).json({
+                                    info: 'post tagging error',
+                                  });
+                                } else {
+                                  const taggedIds2 = [];
+                                  for (let index = 0; index < comments.length; index += 1) {
+                                    const currComment = comments[index].cmt_id;
+                                    taggedIds2.push(currComment);
+                                  }
+                                  connection.query(readCmtTag, [taggedIds2], (errCmtTag, commentTags) => {// eslint-disable-line
+                                    if (errCmtTag) {
+                                      res.status(500).json({
+                                        info: 'comment tagging error',
+                                      });
+                                    } else {
+                                      res.status(200).json({
+                                        status: 'success',
+                                        result,
+                                        icon,
+                                        like: likes,
+                                        count: counts,
+                                        comment: comments,
+                                        postTag: postTags,
+                                        commentTag: commentTags,
+                                      });
+                                    }
+                                  });
+                                }
                               });
                             }
                           });
@@ -505,7 +565,7 @@ router.get('/injectAll', (req, res) => {
 
 router.get('/following', noCache, (req, res) => {
   const username1 = req.query.username;
-  const query = 'SELECT follow_guest FROM follow WHERE follow_host=?;';
+  const query = 'SELECT ui.username AS follow_guest, ui.icon AS icon FROM follow f, user_info ui WHERE follow_host=? AND ui.username=f.follow_guest;';
   connection.query(query, [username1], (err, rows) => {
     if (err) {
       res.status(500).json({
@@ -519,7 +579,7 @@ router.get('/following', noCache, (req, res) => {
 
 router.get('/follower', noCache, (req, res) => {
   const username1 = req.query.username;
-  const query = 'SELECT follow_host FROM follow WHERE follow_guest=? ;';
+  const query = 'SELECT ui.username AS follow_host, ui.icon AS icon FROM follow f, user_info ui WHERE follow_host=? AND ui.username=f.follow_guest;';
   connection.query(query, [username1], (err, rows) => {
     if (err) {
       res.status(500).json({
@@ -637,15 +697,25 @@ router.post('/addComment', [verifySession, verifyToken, noCache], (req, res) => 
   const username1 = req.body.username;
   const text1 = req.body.text;
   const cmtId = req.body.cmt_id;
+  const tag = req.body.tagged;
   const addComment = 'INSERT INTO comment (post_id, cmt_content, username, cmt_id) VALUES (?,?,?,?);';
-  connection.query(addComment, [postId, text1, username1, cmtId], (err) => {
-    if (err) {
+  const addCmtTag = 'INSERT INTO comment_tag (tagged_user, cmt_id) VALUES (?);';
+  connection.query(addComment, [postId, text1, username1, cmtId], (errCmt) => {
+    if (errCmt) {
       res.status(500).json({
-        info: 'Database insert error',
+        info: 'Comment insert error',
       });
     } else {
-      res.status(200).json({
-        status: 'success',
+      connection.query(addCmtTag, tag, (errCmtTag) => {
+        if (errCmtTag) {
+          res.status(500).json({
+            info: 'Commment tagging insert error',
+          });
+        } else {
+          res.status(200).json({
+            status: 'success',
+          });
+        }
       });
     }
   });
@@ -717,6 +787,31 @@ router.get('/countFollower', noCache, (req, res) => {
     }
   });
 });
+
+router.get('/followStatus', noCache, (req, res) => {
+  const host = req.query.followHost;
+  const guest = req.query.followGuest;
+  const checkFollow = 'SELECT * FROM follow WHERE follow_guest = ? AND follow_host = ?;';
+  connection.query(checkFollow, [guest, host], (err, result) => {
+    if (err) {
+      res.status(500).json({
+        info: 'Database error: ',
+      });
+    } else {
+      const message = JSON.stringify(result);
+      if (message.length === 2) {
+        res.status(200).json({
+          status: 'unfollow',
+        });
+      } else {
+        res.status(200).json({
+          status: 'followed',
+        });
+      }
+    }
+  });
+});
+
 
 router.post('/followSuggest', noCache, (req, res) => {
   const host = req.body.followHost;

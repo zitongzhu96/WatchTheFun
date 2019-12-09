@@ -1,6 +1,7 @@
+/* eslint-disable max-len */
 var app = angular.module('MyApp',[]);// eslint-disable-line
 
-app.controller('searchController', function($scope, $http){// eslint-disable-line
+app.controller('searchController', function($scope, $http) {// eslint-disable-line
   $scope.searchUser = () => {
     const hrefList = window.location.href.split('/');
     const username = hrefList[hrefList.length - 1];
@@ -31,7 +32,7 @@ app.controller('searchController', function($scope, $http){// eslint-disable-lin
   };
 });
 
-app.controller('friendlistController', ($scope, $http) => {
+app.controller('friendlistController', function($scope, $http) {// eslint-disable-line
   const hrefList = window.location.href.split('/');
   $http({
     url: '/following',
@@ -69,7 +70,7 @@ app.controller('friendlistController', ($scope, $http) => {
     },
   );
 
-  $scope.goProfile1 = (followGuest) => {
+  $scope.goProfile = (followGuest) => {
     const username = hrefList[hrefList.length - 1];
     $http({
       url: `/goFollowing/${followGuest}`,
@@ -90,34 +91,9 @@ app.controller('friendlistController', ($scope, $http) => {
       },
     );
   };
-
-  $scope.goProfile2 = (followHost) => {
-    const username = hrefList[hrefList.length - 1];
-    $http({
-      url: `/goFollowing/${followHost}`,
-      method: 'GET',
-      headers: {
-        token: sessionStorage.token,
-      },
-      params: {
-        username,
-        followHost,
-      },
-    }).then(
-      (res) => {
-        if (res.data.status === 'success') {
-          window.location.href.assign(`../GuestProfile/${followHost}/${username}`);
-        } else if (res.data.status === 'myself') {
-          window.location.assign(`../Profile/${username}`);
-        }
-      }, (err) => {
-        console.log('Find profile ERROR: ', err.data.info);
-      },
-    );
-  };
 });
 
-app.controller('suggestController', ($scope, $http) => {
+app.controller('suggestController', function($scope, $http) {// eslint-disable-line
   const hrefList = window.location.href.split('/');
   $http({
     url: '/suggestFriend',
@@ -132,13 +108,13 @@ app.controller('suggestController', ($scope, $http) => {
     (res) => {
       $scope.suggest = res.data;
     }, (err) => {
-      console.log('Mainpage content loading error: ', err.data.info);
+      console.log('Suggested content loading error: ', err.data.info);
     },
   );
-  $scope.followUser = ($event) => {
-    const status = $event.event.currentTarget.innerHTML;
-    const button = $event.event.currentTarget;
-    console.log(status);
+
+  $scope.followUser = function(myEvent) {// eslint-disable-line
+    const status = myEvent.event.currentTarget.innerHTML;
+    const button = myEvent.event.currentTarget;
     $http({
       url: '/followSuggest',
       method: 'POST',
@@ -147,7 +123,7 @@ app.controller('suggestController', ($scope, $http) => {
       },
       data: {
         followHost: hrefList[hrefList.length - 1],
-        followGuest: $event.event.path[1].children[1].innerHTML,
+        followGuest: myEvent.event.path[2].children[0].children[0].children[0].children[1].innerHTML,
         status,
       },
     }).then(

@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 var app = angular.module('MyApp',[]); // eslint-disable-line
 
 app.controller('profileController', function($scope, $http){// eslint-disable-line
@@ -82,7 +83,7 @@ app.controller('profileController', function($scope, $http){// eslint-disable-li
       (res) => {
         if (res.data.status === 'success') {
           const userColumn = document.getElementById('grid-username');
-          userColumn.innerHTML = hrefList[hrefList.length - 1];
+          userColumn.innerHTML = hrefList[hrefList.length - 2];
           const userIcon = document.getElementById('grid-user-photo');
           const iconValue = JSON.parse(res.data.result);
           userIcon.src = iconValue[0].icon;
@@ -105,7 +106,7 @@ app.controller('profileController', function($scope, $http){// eslint-disable-li
   }).then(
     (res) => {
     // console.log(res.data);
-      document.getElementById('numPosts').innerHTML = res.data[0].countPost;
+      document.getElementById('numPosts').setAttribute('innerHTML', res.data[0].countPost);
     }, (err) => {
       console.log('Follow error: ', err.data.info);
     },
@@ -123,7 +124,7 @@ app.controller('profileController', function($scope, $http){// eslint-disable-li
   }).then(
     (res) => {
     // console.log(res.data);
-      document.getElementById('numFollowers').innerHTML = res.data[0].countFollower;
+      document.getElementById('numFollowers').setAttribute('innerHTML', res.data[0].countFollower);
     }, (err) => {
       console.log('Follow error: ', err.data.info);
     },
@@ -141,14 +142,37 @@ app.controller('profileController', function($scope, $http){// eslint-disable-li
   }).then(
     (res) => {
     // console.log(res.data);
-      document.getElementById('numFollowings').innerHTML = res.data[0].countFollowing;
+      document.getElementById('numFollowings').setAttribute('innerHTML', res.data[0].countFollowing);
+    }, (err) => {
+      console.log('Follow error: ', err.data.info);
+    },
+  );
+
+  $http({
+    url: '/followStatus',
+    method: 'GET',
+    headers: {
+      token: sessionStorage.token,
+    },
+    params: {
+      followGuest: hrefList[hrefList.length - 2],
+      followHost: hrefList[hrefList.length - 1],
+    },
+  }).then(
+    (res) => {
+    // console.log(res.data);
+      if (res.data.status === 'followed') {
+        document.getElementById('followbtn').setAttribute('innerText', 'Unfollow');
+      } else {
+        document.getElementById('followbtn').setAttribute('innerText', 'Follow');
+      }
     }, (err) => {
       console.log('Follow error: ', err.data.info);
     },
   );
 
   $scope.followUser = () => {
-    const status = document.getElementById('followbtn').innerText;
+    const status = document.getElementById('followbtn').getAttribute('innerText');
     $http({
       url: '/follow',
       method: 'POST',
@@ -164,10 +188,10 @@ app.controller('profileController', function($scope, $http){// eslint-disable-li
       (res) => {
         if (res.data.status === 'followed') {
           alert('Followed:)');
-          document.getElementById('followbtn').innerText = 'Unfollow';
+          document.getElementById('followbtn').setAttribute('innerText', 'Unfollow');
         } else if (res.data.status === 'unfollowed') {
           alert('Unfollowed:(');
-          document.getElementById('followbtn').innerText = 'Follow';
+          document.getElementById('followbtn').setAttribute('innerText', 'Follow');
         }
       }, (err) => {
         console.log('Follow error: ', err);

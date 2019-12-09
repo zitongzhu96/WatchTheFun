@@ -46,6 +46,8 @@
         <div id="grid-container" ng-controller="readController" >
             <!-- Activity screen -->
             <div id="grid-main">
+                <span style="font-family: Poppins-Regular;font-size:30px;line-height: 1.2;
+                letter-spacing: 1px;">WATCH THE FUN FROM YOUR FRIENDS HERE! </span>
                 <div class="element" ng-repeat="x in injectAll">
                     <p class="inline_id" style="display: none;">{{x.post_id}}</p>
                     <div class="title">
@@ -71,7 +73,7 @@
                                 <p class="comment-text"> Chat !</p>
                             </div>
                             <div class="like-info">
-                                <p class="like-count">{{x.like_count}}</p>
+                                <p class="like-count">{{x.likeCount}}</p>
                                 <p> people like this post</p>
                             </div>
                         </div>
@@ -81,8 +83,9 @@
                             <div class="cmt-title">
                                 <div class="cmt-person">{{y.username}}</div>
                                 <div class="cmt-time">{{y.time}}</div>
+                                <div class="cmt-tag">{{y.tagged}}</div>
                             </div>
-                            <div class="cmt-body">{{y.cmt_content}}</div>
+                            <div class="cmt-body" style = "{{y.style}}">{{y.cmt_content}}</div>
                         </div>
                     </div>
                 </div>
@@ -107,47 +110,35 @@
                         <p>Post Your Life !</p>
                     </a>
                 </div>
-    
                 <!-- Friend list of current user, displays part of all friends -->
                 <div id="grid-friend">
-                    <div id="friend-table">
-                        Latest updates of your friends
-                        <ul>
-    
-                        </ul>
-                    </div>
                     <div>
                         <a class="btn btn-info btn-lg">
                             <i class="fa fa-search"></i> Go to your friend list
                         </a>
                     </div>
+                    <div id='friendlist'>
                     <div id="follower-container">
-                        <span>Followers</span>
+                        <span style="font-family: Poppins-Regular;">Followers</span>
                     <table class="friendlist-table">
                             <tr ng-repeat="f2 in follower">
-                                <td><button type="button" class="friendbtn" ng-click="goProfile2(f2.follow_host)">{{f2.follow_host}}</button></td>
+                                <td><button type="button" class="friendbtn" ng-click="goProfile(f2.follow_host)">{{f2.follow_host}}</button></td>
                             </tr>
                           </table>
                     </div>
                     <div id="following-container">
-                        <span>Followings</span>
+                            <span style="font-family: Poppins-Regular;">Followings</span>
                         <table class="friendlist-table">
                             <tr ng-repeat="f1 in following">
-                                <td><button type="button" class="friendbtn" ng-click="goProfile1(f1.follow_guest)">{{f1.follow_guest}}</button></td>
+                                <td><button type="button" class="friendbtn" ng-click="goProfile(f1.follow_guest)">{{f1.follow_guest}}</button></td>
                             </tr>
                           </table>
                     </div>
                 </div>
+                
 
-    
                 <!-- Suggestions of new friends, display part of all suggestions -->
                 <div id="grid-advice">
-                    <div id="advice-table">
-                        See more...
-                        <ul>
-    
-                        </ul>
-                    </div>
                     <div>
                         <a class="btn btn-info btn-lg">
                             <i class="fa fa-plus-square"></i> Meet new people
@@ -163,6 +154,7 @@
                         </div>
                     </div>
                 </div>
+            </div>
             </div>
         </div>
 
@@ -251,6 +243,7 @@
                         </div>
                     </div>
                     <div class="modal-footer" id="post-footer">
+                        <a class="btn btn-danger" id="set-private" ng-click="setPrivate()">Set As Private</a> 
                         <a class="btn btn-secondary" data-dismiss="modal" id="close-post">Close</a>
                         <a class="btn btn-primary"  data-dismiss="modal" id="add-post" ng-click="addPost()">
                             <i class="fa fa-rocket"></i> Post!

@@ -5,6 +5,7 @@ body{
     display: flex;
     justify-content: space-between;
 }
+
 #rightside{
   width:50vw;
   min-width: 500px;
@@ -48,8 +49,8 @@ body{
 
 .heading {
 align-self: center;
-font-family: cursive;
-/* text-transform: uppercase; */
+font-family: Poppins-Regular;
+text-transform: uppercase;
 font-size: 40px;
 color: #0d8a37;
 }
@@ -91,6 +92,7 @@ background: #4B4B4B;
 
 #bg-container{
 width:50vw;
+min-height:100vh;
 min-width: 650px;
 height:100vh;
 min-height: 700px;
