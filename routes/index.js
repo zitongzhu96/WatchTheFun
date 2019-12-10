@@ -654,7 +654,7 @@ router.get('/following', noCache, (req, res) => {
 
 router.get('/follower', noCache, (req, res) => {
   const username1 = req.query.username;
-  const query = 'SELECT ui.username AS follow_host, ui.icon AS icon FROM follow f, user_info ui WHERE follow_host=? AND ui.username=f.follow_guest;';
+  const query = 'SELECT ui.username AS follow_host, ui.icon AS icon FROM follow f, user_info ui WHERE follow_guest=? AND ui.username=f.follow_hostt;';
   connection.query(query, [username1], (err, rows) => {
     if (err) {
       res.status(500).json({
