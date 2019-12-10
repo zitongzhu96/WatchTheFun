@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 /* eslint-disable max-len */
 /* eslint-disable no-param-reassign */
 // This file includes controller on likes, comments
@@ -73,12 +74,15 @@ app.controller('dynamicController', function($scope, $http){// eslint-disable-li
     if (currTarget.getAttribute('data-target') === '#new-comment') {
       const postId = myEvent.event.path[4].firstElementChild.innerHTML;
       document.getElementById('chat-post-id').setAttribute('innerHTML', postId);
+      document.getElementById('chat-post-id').innerHTML = postId;
     } else if (currTarget.getAttribute('data-target') === '#delete-post') {
       const postId = myEvent.event.path[2].firstElementChild.innerHTML;
       document.getElementById('delete-post-id').setAttribute('innerHTML', postId);
+      document.getElementById('delete-post-id').innerHTML = postId;
     } else if (currTarget.getAttribute('data-target') === '#delete-comment') {
       const commentId = myEvent.event.path[1].firstElementChild.innerHTML;
       document.getElementById('delete-comment-id').setAttribute('innerHTML', commentId);
+      document.getElementById('delete-comment-id').innerHTML = commentId;
     } else {
       console.log('Send post ID error');
     }

@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 /* eslint-disable max-len */
 // Add username to href of all page elements
 if (document.getElementById('grid-nav') != null) {

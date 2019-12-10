@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 // Upload image via hidden input slot
 function uploadImage() {
   const input = document.getElementById('file-dir');

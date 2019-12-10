@@ -1,0 +1,22 @@
+language: node_js
+
+services:
+  - mysql
+before_install:
+  - mysql -u root --password="longpassword" < MySQLdump.sql
+
+install:
+  - nvm install node
+  - node -v
+  - npm install --save-dev jest
+  - npm install --save-dev jest-cli
+  - npm install --save-dev jest-environment-webdriver
+  - npm install --save-dev jest-fetch-mock
+  - npm install mysql
+  - npm install jsonwebtoken
+  - npm install angular
+  - npm install @angular/core 
+  - npm install --save-dev angular-mocks
+script:
+  - npm test --coverage
+

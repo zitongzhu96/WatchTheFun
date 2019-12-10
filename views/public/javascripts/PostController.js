@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 var app = angular.module('MyApp', []);// eslint-disable-line
 
 app.controller('postController', function($scope, $http){// eslint-disable-line

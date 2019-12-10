@@ -146,6 +146,7 @@ app.controller('profileController', function($scope, $http){// eslint-disable-li
     (res) => {
     // console.log(res.data);
       document.getElementById('numPosts').setAttribute('innerHTML', res.data[0].countPost);
+      document.getElementById('numPosts').innerHTML = res.data[0].countPost;
     }, (err) => {
       console.log('Follow error: ', err.data.info);
     },
@@ -164,6 +165,7 @@ app.controller('profileController', function($scope, $http){// eslint-disable-li
     (res) => {
     // console.log(res.data);
       document.getElementById('numFollowers').setAttribute('innerHTML', res.data[0].countFollower);
+      document.getElementById('numFollowers').innerHTML = res.data[0].countFollower;
     }, (err) => {
       console.log('Follow error: ', err.data.info);
     },
@@ -182,6 +184,7 @@ app.controller('profileController', function($scope, $http){// eslint-disable-li
     (res) => {
     // console.log(res.data);
       document.getElementById('numFollowings').setAttribute('innerHTML', res.data[0].countFollowing);
+      document.getElementById('numFollowings').innerHTML = res.data[0].countFollowing;
     }, (err) => {
       console.log('Follow error: ', err.data.info);
     },
