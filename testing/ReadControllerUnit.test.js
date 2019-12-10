@@ -290,7 +290,7 @@ describe('Main page unit testing', function(){
         expect($scope.injectAll).toBeUndefined();
       });
 
-      it('should return error of page loading and get no icons', function(){
+      it('should return error of page sidebar loading', function(){
         const controller = $controller('readController', { $scope, $http });
         $httpBackend.when('GET', '/injectAll?username=').respond(200, {
             info: 'post tagging error',
