@@ -18,12 +18,12 @@ const path = require('path');
 const mysql = require('mysql');
 
 const connection = mysql.createConnection({
-  // host: 'cis557.cpkprmpifa5w.us-east-1.rds.amazonaws.com',
-  // user: 'admin',
-  // port: '1518',
-  host: 'localhost',
-  user: 'root',
+  host: 'cis557.cbiaonyekd5a.us-east-1.rds.amazonaws.com',
+  user: 'admin',
   port: '3306',
+//   host: 'localhost',
+//   user: 'root',
+//   port: '3306',
   password: 'longpassword',
   database: 'cis557',
   charset: 'utf8mb4',
