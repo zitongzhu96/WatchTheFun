@@ -249,7 +249,7 @@ describe('Like and commenting page unit testing', function(){
             {firstElementChild: {setAttribute: function(a, b) {return 'good';}},
             lastElementChild: {innerHTML: ' Like !'}},
             {firstElementChild: {style: {backgroundColor : 'gold'}, innerHTML: '2'},
-                children: [0,1,{firstElementChild: {value: 'hi'}}],
+                children: [0,1,{firstElementChild: {nextElementSibling:{value: 'hi'}}}],
                 lastElementChild: {firstElementChild: {innerHTML: 1}}},
             3,
             4,]}};
@@ -270,13 +270,13 @@ describe('Like and commenting page unit testing', function(){
       it('test comment adding error', () => {
         const controller = $controller('dynamicController', { $scope, $http });
         myEvent = {event: {path: [0,
-            {firstElementChild: {setAttribute: function(a, b) {return 'good';}},
-            lastElementChild: {innerHTML: ' Like !'}},
-            {firstElementChild: {style: {backgroundColor : 'gold'}, innerHTML: '2'},
-                children: [0,1,{firstElementChild: {value: 'hi'}}],
-                lastElementChild: {firstElementChild: {innerHTML: 1}}},
-            3,
-            4,]}};
+          {firstElementChild: {setAttribute: function(a, b) {return 'good';}},
+          lastElementChild: {innerHTML: ' Like !'}},
+          {firstElementChild: {style: {backgroundColor : 'gold'}, innerHTML: '2'},
+              children: [0,1,{firstElementChild: {nextElementSibling:{value: 'hi'}}}],
+              lastElementChild: {firstElementChild: {innerHTML: 1}}},
+          3,
+          4,]}};
         $httpBackend.when('POST', '/addComment' ).respond(500, {
           info: 'Commment tagging insert error',
         });

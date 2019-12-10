@@ -195,11 +195,9 @@ app.controller('profileController', function($scope, $http){// eslint-disable-li
         if (res.data.status === 'followed') {
           alert('Followed:)');
           document.getElementById('followbtn').setAttribute('innerText', 'Unfollow');
-          document.getElementById('followbtn').innerText = 'Unfollow';
         } else if (res.data.status === 'unfollowed') {
           alert('Unfollowed:(');
           document.getElementById('followbtn').setAttribute('innerText', 'Follow');
-          document.getElementById('followbtn').innerText = 'Follow';
         }
       }, (err) => {
         console.log('Follow error: ', err);
