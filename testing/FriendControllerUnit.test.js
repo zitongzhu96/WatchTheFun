@@ -2,86 +2,48 @@
 // Use function instead of () => {} in controller.js and controllerUnit.test.js
 // Since the latter does not contain this
 
-document.body.innerHTML=`    <body ng-controller="dynamicController">
-<div id="grid-container">
-    <!-- Navigation bar at the top of the screen -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light" id="grid-nav">
-        <span class="navbar-brand center">Watch The Fun</span>
-        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                <div class="navbar-nav">
-                    <div>
-                        <a class="nav-item nav-link" id="dashboard" href="/MainPage">
-                            <i class="fas fa-atom"></i> Dashboard
-                        </a>
-                        <a class="nav-item nav-link active" id="friendlistpage" href="/FriendList">
-                            <i class="far fa-address-book"></i> Friend List
-                        </a>
-                        <a class="nav-item nav-link" id="profilepage" href="/Profile">
-                            <i class="fas fa-user-circle"></i> My Profile
-                        </a>
-                    </div>
-                    
-                    <a class="nav-item nav-link" id="loginpage" ng-click="logout()">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </a>
-                </div>
-            </div>
-    </nav>
-<div id="main-container">
-<div id="search-container" ng-controller="searchController">
-    <div id="search-label">FIND NEW FRIENDS HERE:</div>
-    <input type="text" id="search-input" ng-model="searchname" placeholder="SEARCH OTHER USERS">
-    <button type="submit" id="search-btn" ng-click="searchUser()">Search</button>
+document.body.innerHTML=`  <div id="search-container" ng-controller="searchController">
+<div id="search-label">FIND NEW FRIENDS HERE:</div>
+<input type="text" id="search-input" ng-model="searchname" placeholder="SEARCH OTHER USERS">
+<button type="submit" id="search-btn" ng-click="searchUser()">Search</button>
 </div>
-<center><span id="search-label" style="font-size:30px">SEE YOUR FRIENDS HERE! </span></center>
-<div id="users-container">   
- <div id="friendlist" ng-controller="friendlistController">
+<div id="friendlist" ng-controller="friendlistController">
 <div id="following-box">
-    <div id="following-label">
-        F<br>O<br>L<br>L<br>O<br>W<br>I<br>N<br>G
+<div id="following-label">
+    F<br>O<br>L<br>L<br>O<br>W<br>I<br>N<br>G
+</div>
+<div id="following-container">
+    <table class="friendlist-table">
+        <tr ng-repeat="f1 in following">
+            <td><button type="button" class="friendbtn" ng-click="goProfile(f1.follow_guest)">{{f1.follow_guest}}</button></td>
+        </tr>
+      </table>
+</div>
+</div>
+<div id="follower-box">
+    <div id="follower-label">
+            F<br>O<br>L<br>L<br>O<br>W<br>E<br>R
     </div>
-    <div id="following-container">
+    <div id="follower-container">
         <table class="friendlist-table">
-            <tr ng-repeat="f1 in following">
-                <td><button type="button" class="friendbtn" ng-click="goProfile(f1.follow_guest)">
-                    <span class="smicon"><img style="height:40px; width:40px" class="person-icon" ng-src="{{f1.icon}}"/><span class="person-name">{{f1.follow_guest}}</span></span>
-                </button></td>
+            <tr ng-repeat="f2 in follower">
+                <td><button type="button" class="friendbtn" ng-click="goProfile(f2.follow_host)">{{f2.follow_host}}</button></td>
             </tr>
           </table>
     </div>
 </div>
-<div id="follower-box">
-        <div id="follower-label">
-                F<br>O<br>L<br>L<br>O<br>W<br>E<br>R
-        </div>
-        <div id="follower-container">
-            <table class="friendlist-table">
-                <tr ng-repeat="f2 in follower">
-                        <td><button type="button" class="friendbtn" ng-click="goProfile(f2.follow_host)">
-                            <span class="smicon"><img style="height:40px; width:40px" class="person-icon" ng-src="{{f2.icon}}"/><span class="person-name">{{f2.follow_host}}</span></span>
-                        </button></td>
-                </tr>
-              </table>
-        </div>
 </div>
-
 <div id="suggests" ng-controller="suggestController">
-    <div id="suggests-label">S<br>U<br>G<br>G<br>E<br>S<br>T </div>
-        <table class="suggest-table">
-            <tr ng-repeat="sf in suggest" >
-                <td><button type="button" class="friendbtn"  ng-click="goProfile(sf.username)">
-                    <span class="smicon"><img style="height:40px; width:40px" class="person-icon" ng-src="{{sf.icon}}"><span id="suggest-username">{{sf.username}}</span>
-                    </span>
-                </button></td>
-                <td><button type="submit" class="search-btn" ng-click="followUser({event:$event})">Follow</button></td>
-                </tr>
-        </table> 
+<div id="suggests-label">Suggest For You: </div>
+<div id="suggest-users">
+    <div class="su-container" ng-repeat="sf in suggest">
+        <img ng-src="{{sf.icon}}">
+        <p id="suggest-username">{{sf.username}}</p>      
+        <button type="submit" class="search-btn" ng-click="followUser(myEvent)">Follow</button>
+    </div>
 </div>
 </div>
 </div>
-</div>
-</div>
-</body>
 `
 
 require('../node_modules/angular/angular.min.js');

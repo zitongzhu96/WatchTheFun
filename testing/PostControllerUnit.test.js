@@ -79,7 +79,7 @@ describe('Post modal page unit testing', function(){
       expect(privacy.getAttribute('innerHTML')).toBe('Set As Private');
     });
 
-    it('test post generatinon process', () => {
+    it('test post generation process', () => {
       const controller = $controller('postController', { $http, $scope });
       document.getElementById('set-private').setAttribute('innerHTML','Set As Private');
       document.getElementById('post-content').setAttribute('value','@yfmao');

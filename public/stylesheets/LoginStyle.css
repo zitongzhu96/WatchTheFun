@@ -103,6 +103,7 @@ justify-content: center;
 align-items: center;
 background-image: url(https://media.worldnomads.com/learnimages/2019/newimages/Annapurnamellor.jpg);
 background-repeat:no-repeat;
+background-size: cover;
 /* animation: 10s rainbow infinite linear; */
 }
 .large-img{

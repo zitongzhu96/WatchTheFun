@@ -10,6 +10,7 @@ app.controller('profileController', function($scope, $http){// eslint-disable-li
     },
     params: {
       username: hrefList[hrefList.length - 1],
+      guest: hrefList[hrefList.length - 1],
     },
   }).then(
     (res) => {
@@ -139,6 +140,7 @@ app.controller('profileController', function($scope, $http){// eslint-disable-li
     },
     params: {
       username: hrefList[hrefList.length - 1],
+      guest: hrefList[hrefList.length - 1],
     },
   }).then(
     (res) => {

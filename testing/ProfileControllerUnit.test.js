@@ -88,19 +88,19 @@ describe('profile page unit testing', function(){
 
       it('should add icon and username', function(){
         const controller = createController();
-        $httpBackend.when('GET', '/injectMain?username=' ).respond(404, {
+        $httpBackend.when('GET', '/injectMain?guest=&username=' ).respond(404, {
           status: 'success',
           result: 'yfmao',
           like: [],
           count: [],
           comment :[],
         });
-        $httpBackend.expect('GET', '/injectMain?username=');
-        $httpBackend.when('GET', '/countPost?username=' ).respond(404, {
+        $httpBackend.expect('GET', '/injectMain?guest=&username=');
+        $httpBackend.when('GET', '/countPost?guest=&username=' ).respond(404, {
             status: 'success',
             user: 'yfmao',
           });
-          $httpBackend.expect('GET', '/countPost?username=');
+          $httpBackend.expect('GET', '/countPost?guest=&username=');
           $httpBackend.when('GET', '/countFollower?username=' ).respond(404, {
             status: 'success',
             user: 'yfmao',
@@ -123,19 +123,19 @@ describe('profile page unit testing', function(){
 
       it('should change icon', function(){
         const controller = createController();
-        $httpBackend.when('GET', '/injectMain?username=' ).respond(200, [{
+        $httpBackend.when('GET', '/injectMain?guest=&username=' ).respond(200, [{
             status: 'success',
             result: 'yfmao',
             like: [{u:1,p:1}],
             count: [{u:1,p:1}],
             comment :[{u:1,p:1,c:1}],
           }]);
-        $httpBackend.expect('GET', '/injectMain?username=');
-        $httpBackend.when('GET', '/countPost?username=' ).respond(200, [{
+        $httpBackend.expect('GET', '/injectMain?guest=&username=');
+        $httpBackend.when('GET', '/countPost?guest=&username=' ).respond(200, [{
             status: 'success',
             countPost: 0,
           }]);
-          $httpBackend.expect('GET', '/countPost?username=');
+          $httpBackend.expect('GET', '/countPost?guest=&username=');
           $httpBackend.when('GET', '/countFollower?username=' ).respond(200, [{
             status: 'success',
             countFollower: 0,

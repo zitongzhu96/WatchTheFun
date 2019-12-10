@@ -89,19 +89,19 @@ describe('Guestprofile page unit testing', function(){
 
       it('should add icon and username', function(){
         const controller = createController();
-        $httpBackend.when('GET', '/injectMain?username=localhost').respond(404, {
+        $httpBackend.when('GET', '/injectMain?guest=&username=localhost').respond(404, {
           status: 'error',
           result: 'yfmao',
           like: [],
           count: [],
           comment :[],
         });
-        $httpBackend.expect('GET', '/injectMain?username=localhost');
-        $httpBackend.when('GET', '/countPost?username=localhost' ).respond(404, {
+        $httpBackend.expect('GET', '/injectMain?guest=&username=localhost');
+        $httpBackend.when('GET', '/countPost?guest=&username=localhost' ).respond(404, {
             status: 'error',
             user: 'yfmao',
           });
-          $httpBackend.expect('GET', '/countPost?username=localhost');
+          $httpBackend.expect('GET', '/countPost?guest=&username=localhost');
           $httpBackend.when('GET', '/countFollower?username=localhost' ).respond(404, {
             status: 'error',
             user: 'yfmao',
@@ -135,7 +135,7 @@ describe('Guestprofile page unit testing', function(){
 
       it('should follow user', function(){
         const controller = createController();
-        $httpBackend.when('GET', '/injectMain?username=localhost').respond(200, [{
+        $httpBackend.when('GET', '/injectMain?guest=&username=localhost').respond(200, [{
             status: 'success',
             result: 'yfmao',
             like: [{u:1,p:1}],
@@ -143,13 +143,13 @@ describe('Guestprofile page unit testing', function(){
             comment :[{u:1,p:1,c:1}],
             
           }]);
-        $httpBackend.expect('GET', '/injectMain?username=localhost');
-        $httpBackend.when('GET', '/countPost?username=localhost' ).respond(200, [{
+        $httpBackend.expect('GET', '/injectMain?guest=&username=localhost');
+        $httpBackend.when('GET', '/countPost?guest=&username=localhost' ).respond(200, [{
             status: 'success',
             countPost: 0,
             
           }]);
-          $httpBackend.expect('GET', '/countPost?username=localhost');
+          $httpBackend.expect('GET', '/countPost?guest=&username=localhost');
           $httpBackend.when('GET', '/countFollower?username=localhost' ).respond(200, [{
             status: 'success',
             countFollower: 0,
@@ -185,7 +185,7 @@ describe('Guestprofile page unit testing', function(){
 
       it('should follow user', function(){
         const controller = createController();
-        $httpBackend.when('GET', '/injectMain?username=localhost').respond(200, [{
+        $httpBackend.when('GET', '/injectMain?guest=&username=localhost').respond(200, [{
             status: 'success',
             result: 'yfmao',
             like: [{u:1,p:1}],
@@ -193,13 +193,13 @@ describe('Guestprofile page unit testing', function(){
             comment :[{u:1,p:1,c:1}],
             
           }]);
-        $httpBackend.expect('GET', '/injectMain?username=localhost');
-        $httpBackend.when('GET', '/countPost?username=localhost' ).respond(200, [{
+        $httpBackend.expect('GET', '/injectMain?guest=&username=localhost');
+        $httpBackend.when('GET', '/countPost?guest=&username=localhost' ).respond(200, [{
             status: 'success',
             countPost: 0,
             
           }]);
-          $httpBackend.expect('GET', '/countPost?username=localhost');
+          $httpBackend.expect('GET', '/countPost?guest=&username=localhost');
           $httpBackend.when('GET', '/countFollower?username=localhost' ).respond(200, [{
             status: 'success',
             countFollower: 0,
