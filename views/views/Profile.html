@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html ng-app="MyApp">
+    <head>
+        <meta charset="UTF-8">
+        <title>CIS557_Project_MainPage</title>   
+        
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular-sanitize.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.8/angular.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        
+        <link href="/stylesheets/ProfileStyle.css" rel="stylesheet">
+        <script src="/javascripts/ProfileController.js" type="text/javascript"></script> 
+    </head>
+    <body ng-controller="dynamicController">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light" id="grid-nav">
+            <span class="navbar-brand center">Watch The Fun</span>
+                        
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <div>
+                        <a class="nav-item nav-link" id="dashboard" href="/MainPage">
+                            <i class="fas fa-atom"></i> Dashboard
+                        </a>
+                        <a class="nav-item nav-link" id="friendlistpage" href="/FriendList">
+                            <i class="far fa-address-book"></i> Friend List
+                        </a>
+                        <a class="nav-item nav-link active" id="profilepage" href="/Profile">
+                            <i class="fas fa-user-circle"></i> My Profile
+                        </a>
+                    </div>
+                    <a class="nav-item nav-link" id="loginpage" ng-click="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <div id="grid-container" ng-controller="profileController">
+            <div id="grid-profile">
+                <input type="file" id="dir" file-model="outimg" accept="image/gif,image/jpg,image/jpeg,image/png,image/tif,image/bmp" style="display: none;"/>
+                <div id='saved-img' style="display: none;"></div>
+                <div id="user-info">
+                    <img id="grid-user-photo" ng-click="selectIcon()"/> 
+                    <div id="grid-username" ng-init="addIcon()"></div> 
+                    <div id="upload-icon" ng-click="changeIcon()" style="display: none;"></div>
+                </div>
+                <div class="user-record">
+                        <div class="records">Posts<br><center></br><p id="numPosts"> </p></center></div>  
+                        <div class="records">Followers<br><center></br><p id="numFollowers"> </p></center></div>
+                        <div class="records">Following<br><center></br><p id="numFollowings"> </p></center></div>
+                </div> 
+            </div>
+
+            <div id="grid-main">
+                <div class="element" ng-repeat="x in injectMain">
+                    <p style="display: none;">{{x.post_id}}</p>
+                    <div class="title">
+                        <div class="person">
+                            <p class="person-name">{{x.username}}</p>
+                        </div>
+                        <div class="post-time">{{x.time}}</div>
+                        <div class="fas fa-times" data-toggle="modal" data-target="#delete-post" ng-click="sendPostID({event: $event})"> Delete Post</div>
+                    </div>
+                    <div class="content">
+                        <img ng-src="{{x.picture}}"/>
+                        <p>{{x.text}}</p>
+                    </div>
+                    <div class="tail">
+                        <div class="like">
+                            <div class="like-btn" ng-click="addLike({event: $event})" style="background-color:{{x.bkg_color}};">
+                                <a class="{{x.thumb}}" style="color:red;"></a>
+                                <p class="like-text">{{x.liked}}</p>
+                            </div>
+                            <div class="comment-btn" ng-click="sendPostID({event: $event})" data-toggle="modal" data-target="#new-comment">
+                                <a class="far fa-comments" style="color:green"></a>
+                                <p class="comment-text"> Chat !</p>
+                            </div>
+                            <div class="like-info">
+                                <p class="like-count">{{x.like_count}}</p>
+                                <p> people like this post</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comment_list">
+                        <div class="comment-element" ng-repeat="y in x.commentList">
+                            <div class="cmt-title">
+                                <p class="cmt-id" style="display: none;">{{y.cmt_id}}</p>
+                                <div class="cmt-person">{{y.username}}</div>
+                                <div class="cmt-time">{{y.time}}</div>
+                                <div class="fas fa-times" data-toggle="modal" data-target="#delete-comment" ng-click="sendPostID({event: $event})"> Delete Comment</div>
+                            </div>
+                            <div class="cmt-body">{{y.cmt_content}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>           
+        </div>
+
+        <div class="modal fade" id="new-comment" tabindex="-1" role="dialog" aria-hidden="true"> 
+            <div class="modal-dialog" role="document">
+                <div class="modal-content" style="display: flex; justify-content: center;" href="/newComment">
+                    <p id="chat-post-id" style="display: none;"></p>
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="comment-title">
+                            Add Your Comment !
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="clearCommentModal()">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="comment-body">
+                        <textarea class="modal-text" id="comment-content" placeholder="Write your comments!" ng-model="outcomment"></textarea>
+                        <div class="modal-functions">
+                            <a class="emoji-finder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <p class="emoji-dropdown">Find emoji &#128512</p>
+                                <div class="dropdown-menu">
+                                    <div class="dropdown-row">
+                                        <a class="dropdown-item">&#128512</a><a class="dropdown-item">&#128513</a><a class="dropdown-item">&#128514</a><a class="dropdown-item">&#128515</a>
+                                        <a class="dropdown-item">&#128516</a><a class="dropdown-item">&#128517</a><a class="dropdown-item">&#128518</a><a class="dropdown-item">&#128519</a>
+                                    </div>
+                                    <div class="dropdown-row">
+                                        <a class="dropdown-item">&#128520</a><a class="dropdown-item">&#128521</a><a class="dropdown-item">&#128522</a><a class="dropdown-item">&#128523</a>
+                                        <a class="dropdown-item">&#128524</a><a class="dropdown-item">&#128525</a><a class="dropdown-item">&#128526</a><a class="dropdown-item">&#128527</a>
+                                    </div>
+                                    <div class="dropdown-row">
+                                        <a class="dropdown-item">&#128528</a><a class="dropdown-item">&#128529</a><a class="dropdown-item">&#128530</a><a class="dropdown-item">&#128531</a>
+                                        <a class="dropdown-item">&#128532</a><a class="dropdown-item">&#128533</a><a class="dropdown-item">&#128534</a><a class="dropdown-item">&#128535</a>
+                                    </div>
+                                    <div class="dropdown-row">
+                                        <a class="dropdown-item">&#128536</a><a class="dropdown-item">&#128537</a><a class="dropdown-item">&#128538</a><a class="dropdown-item">&#128539</a>
+                                        <a class="dropdown-item">&#128540</a><a class="dropdown-item">&#128541</a><a class="dropdown-item">&#128542</a><a class="dropdown-item">&#128543</a>
+                                    </div>
+                                    <div class="dropdown-row">
+                                        <a class="dropdown-item">&#128544</a><a class="dropdown-item">&#128545</a><a class="dropdown-item">&#128546</a><a class="dropdown-item">&#128547</a>
+                                        <a class="dropdown-item">&#128548</a><a class="dropdown-item">&#128549</a><a class="dropdown-item">&#128550</a><a class="dropdown-item">&#128551</a>
+                                    </div>
+                                    <div class="dropdown-row">
+                                        <a class="dropdown-item">&#128552</a><a class="dropdown-item">&#128553</a><a class="dropdown-item">&#128554</a><a class="dropdown-item">&#128555</a>
+                                        <a class="dropdown-item">&#128556</a><a class="dropdown-item">&#128557</a><a class="dropdown-item">&#128558</a><a class="dropdown-item">&#128559</a>
+                                    </div>
+                                    <div class="dropdown-row">
+                                        <a class="dropdown-item">&#128560</a><a class="dropdown-item">&#128561</a><a class="dropdown-item">&#128562</a><a class="dropdown-item">&#128563</a>
+                                        <a class="dropdown-item">&#128564</a><a class="dropdown-item">&#128565</a><a class="dropdown-item">&#128566</a><a class="dropdown-item">&#128567</a>
+                                    </div>
+                                    <div class="dropdown-row">
+                                        <a class="dropdown-item">&#128577</a><a class="dropdown-item">&#128578</a><a class="dropdown-item">&#128579</a><a class="dropdown-item">&#128580</a>
+                                        <a class="dropdown-item">&#129296</a><a class="dropdown-item">&#129297</a><a class="dropdown-item">&#129298</a><a class="dropdown-item">&#129299</a>
+                                    </div>
+                                    <div class="dropdown-row">
+                                        <a class="dropdown-item">&#129300</a><a class="dropdown-item">&#129301</a><a class="dropdown-item">&#129302</a><a class="dropdown-item">&#129303</a>
+                                        <a class="dropdown-item">&#129304</a><a class="dropdown-item">&#129305</a><a class="dropdown-item">&#129306</a><a class="dropdown-item">&#129307</a>
+                                    </div>
+                                    <div class="dropdown-row">
+                                        <a class="dropdown-item">&#129308</a><a class="dropdown-item">&#129309</a><a class="dropdown-item">&#129310</a><a class="dropdown-item">&#129311</a>
+                                        <a class="dropdown-item">&#129312</a><a class="dropdown-item">&#129313</a><a class="dropdown-item">&#129314</a><a class="dropdown-item">&#129315</a>
+                                    </div>
+                                    <div class="dropdown-row">
+                                        <a class="dropdown-item">&#129316</a><a class="dropdown-item">&#129317</a><a class="dropdown-item">&#129318</a><a class="dropdown-item">&#129319</a>
+                                        <a class="dropdown-item">&#129320</a><a class="dropdown-item">&#129321</a><a class="dropdown-item">&#129322</a><a class="dropdown-item">&#129323</a>
+                                    </div>
+                                    <div class="dropdown-row">
+                                        <a class="dropdown-item">&#129324</a><a class="dropdown-item">&#129325</a><a class="dropdown-item">&#129326</a><a class="dropdown-item">&#129327</a>
+                                        <a class="dropdown-item">&#129488</a>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="modal-footer" id="comment-footer">
+                        <a class="btn btn-secondary" data-dismiss="modal" id="close-comment">Close</a>
+                        <a class="btn btn-primary"  data-dismiss="modal" id="add-comment" ng-click="addComment({event: $event})">
+                            <i class="far fa-comment"></i> Comment
+                        </a>
+                    </div>  
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="delete-post" tabindex="-1" role="dialog" aria-hidden="true"> 
+            <div class="modal-dialog" role="document">
+                <div class="modal-content" style="display: flex; justify-content: center;" href="/deletePost">
+                    <p id="delete-post-id" style="display: none;"></p>
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="del-post-title">
+                            Deleting Post, Are you sure?
+                        </h5>
+                    </div>
+                    <div class="modal-footer" id="del-post-footer">
+                        <a class="btn btn-secondary" data-dismiss="modal" id="close-del-post">Withdraw</a>
+                        <a class="btn btn-danger"  data-dismiss="modal" id="del-post" ng-click="deletePost()">
+                            <i class="fas fa-comment-slash"></i> Confirm & Delete
+                        </a>
+                    </div>  
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="delete-comment" tabindex="-1" role="dialog" aria-hidden="true"> 
+            <div class="modal-dialog" role="document">
+                <div class="modal-content" style="display: flex; justify-content: center;" href="/deleteComment">
+                    <p id="delete-comment-id" style="display: none;"></p>
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="del-comment-title">
+                            Deleting Comment, Are you sure?
+                        </h5>
+                    </div>
+                    <div class="modal-footer" id="del-comment-footer">
+                        <a class="btn btn-secondary" data-dismiss="modal" id="close-del-comment">Withdraw</a>
+                        <a class="btn btn-danger"  data-dismiss="modal" id="del-comment" ng-click="deleteComment()">
+                            <i class="fas fa-comment-slash"></i> Confirm & Delete
+                        </a>
+                    </div>  
+                </div>
+            </div>
+        </div>
+
+
+    </body>
+    <script src="/javascripts/Post.js"></script>
+    <script src="/javascripts/StaticPage.js"></script>
+    <script src="/javascripts/DynamicController.js" type="text/javascript"></script> 
+</html>

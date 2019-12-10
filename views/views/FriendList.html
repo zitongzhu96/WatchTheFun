@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html ng-app="MyApp">
+    <head>
+        <meta charset="UTF-8">
+        <title>CIS557_Project_MainPage</title>   
+         
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.8/angular.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular-sanitize.js"></script>
+
+        <link href="/stylesheets/FriendStyle.css" rel="stylesheet" type="text/css"/>
+        <script src="/javascripts/FriendController.js" type="text/javascript"></script>
+    </head>    
+
+    <body ng-controller="dynamicController">
+        <div id="grid-container">
+            <!-- Navigation bar at the top of the screen -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-light" id="grid-nav">
+                <span class="navbar-brand center">Watch The Fun</span>
+                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                        <div class="navbar-nav">
+                            <div>
+                                <a class="nav-item nav-link" id="dashboard" href="/MainPage">
+                                    <i class="fas fa-atom"></i> Dashboard
+                                </a>
+                                <a class="nav-item nav-link active" id="friendlistpage" href="/FriendList">
+                                    <i class="far fa-address-book"></i> Friend List
+                                </a>
+                                <a class="nav-item nav-link" id="profilepage" href="/Profile">
+                                    <i class="fas fa-user-circle"></i> My Profile
+                                </a>
+                            </div>
+                            
+                            <a class="nav-item nav-link" id="loginpage" ng-click="logout()">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </a>
+                        </div>
+                    </div>
+            </nav>
+        <div id="main-container">
+        <div id="search-container" ng-controller="searchController">
+            <div id="search-label">FIND NEW FRIENDS HERE:</div>
+            <input type="text" id="search-input" ng-model="searchname" placeholder="SEARCH OTHER USERS">
+            <button type="submit" id="search-btn" ng-click="searchUser()">Search</button>
+        </div>
+        <center><span id="search-label" style="font-size:30px">SEE YOUR FRIENDS HERE! </span></center>
+        <div id="users-container">   
+         <div id="friendlist" ng-controller="friendlistController">
+        <div id="following-box">
+            <div id="following-label">
+                F<br>O<br>L<br>L<br>O<br>W<br>I<br>N<br>G
+            </div>
+            <div id="following-container">
+                <table class="friendlist-table">
+                    <tr ng-repeat="f1 in following">
+                        <td><button type="button" class="friendbtn" ng-click="goProfile(f1.follow_guest)">
+                            <span class="smicon"><img style="height:40px; width:40px" class="person-icon" ng-src="{{f1.icon}}"/><span class="person-name">{{f1.follow_guest}}</span></span>
+                        </button></td>
+                    </tr>
+                  </table>
+            </div>
+        </div>
+        <div id="follower-box">
+                <div id="follower-label">
+                        F<br>O<br>L<br>L<br>O<br>W<br>E<br>R
+                </div>
+                <div id="follower-container">
+                    <table class="friendlist-table">
+                        <tr ng-repeat="f2 in follower">
+                                <td><button type="button" class="friendbtn" ng-click="goProfile(f2.follow_host)">
+                                    <span class="smicon"><img style="height:40px; width:40px" class="person-icon" ng-src="{{f2.icon}}"/><span class="person-name">{{f2.follow_host}}</span></span>
+                                </button></td>
+                        </tr>
+                      </table>
+                </div>
+        </div>
+        
+        <div id="suggests" ng-controller="suggestController">
+            <div id="suggests-label">S<br>U<br>G<br>G<br>E<br>S<br>T </div>
+                <table class="suggest-table">
+                    <tr ng-repeat="sf in suggest" >
+                        <td><button type="button" class="friendbtn"  ng-click="goProfile(sf.username)">
+                            <span class="smicon"><img style="height:40px; width:40px" class="person-icon" ng-src="{{sf.icon}}"><span id="suggest-username">{{sf.username}}</span>
+                            </span>
+                        </button></td>
+                        <td><button type="submit" class="search-btn" ng-click="followUser({event:$event})">Follow</button></td>
+                        </tr>
+                </table> 
+        </div>
+    </div>
+        </div>
+    </div>
+</div>
+    </body>
+    <script src="/javascripts/StaticPage.js"></script>
+    <script src="/javascripts/DynamicController.js" type="text/javascript"></script>
+</html>
