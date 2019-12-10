@@ -46,8 +46,6 @@
         <div id="grid-container" ng-controller="readController" >
             <!-- Activity screen -->
             <div id="grid-main">
-                <span style="font-family: Poppins-Regular;font-size:30px;line-height: 1.2;
-                letter-spacing: 1px;">WATCH THE FUN FROM YOUR FRIENDS HERE! </span>
                 <div class="element" ng-repeat="x in injectAll">
                     <p class="inline_id" style="display: none;">{{x.post_id}}</p>
                     <div class="title">
@@ -110,16 +108,22 @@
                         <p>Post Your Life !</p>
                     </a>
                 </div>
+    
                 <!-- Friend list of current user, displays part of all friends -->
                 <div id="grid-friend">
+                    <div id="friend-table">
+                        Latest updates of your friends
+                        <ul>
+    
+                        </ul>
+                    </div>
                     <div>
                         <a class="btn btn-info btn-lg">
                             <i class="fa fa-search"></i> Go to your friend list
                         </a>
                     </div>
-                    <div id='friendlist'>
                     <div id="follower-container">
-                        <span style="font-family: Poppins-Regular;">Followers</span>
+                        <span>Followers</span>
                     <table class="friendlist-table">
                             <tr ng-repeat="f2 in follower">
                                 <td><button type="button" class="friendbtn" ng-click="goProfile(f2.follow_host)">{{f2.follow_host}}</button></td>
@@ -127,7 +131,7 @@
                           </table>
                     </div>
                     <div id="following-container">
-                            <span style="font-family: Poppins-Regular;">Followings</span>
+                        <span>Followings</span>
                         <table class="friendlist-table">
                             <tr ng-repeat="f1 in following">
                                 <td><button type="button" class="friendbtn" ng-click="goProfile(f1.follow_guest)">{{f1.follow_guest}}</button></td>
@@ -135,10 +139,16 @@
                           </table>
                     </div>
                 </div>
-                
 
+    
                 <!-- Suggestions of new friends, display part of all suggestions -->
                 <div id="grid-advice">
+                    <div id="advice-table">
+                        See more...
+                        <ul>
+    
+                        </ul>
+                    </div>
                     <div>
                         <a class="btn btn-info btn-lg">
                             <i class="fa fa-plus-square"></i> Meet new people
@@ -154,7 +164,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
             </div>
         </div>
 
@@ -239,7 +248,7 @@
                         </div>
                         <div id="preview-area">
                             <img id="preview-image"/>
-                            <p id="preview-text" ng-bind-html="outtxt | emoji"></p>
+                            <p id="preview-text" ng-bind-html="outtxt  | emoji"></p>
                         </div>
                     </div>
                     <div class="modal-footer" id="post-footer">

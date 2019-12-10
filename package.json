@@ -1,11 +1,10 @@
 {
-  "name": "watchthefun",
+  "name": "asset",
   "version": "1.0.0",
-  "description": "# Planning: User stories, Story points (6 points)",
+  "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "jest --coverage",
-    "start": "node app.js"
+    "test": "jest --coverage"
   },
   "author": "YFMao,ZTZhu",
   "license": "ISC",
@@ -17,6 +16,7 @@
     "testTimeout": 20000
   },
   "dependencies": {
+    "@angular/core": "^8.2.14",
     "angular": "^1.7.9",
     "body-parser": "^1.19.0",
     "commonjs": "0.0.1",
@@ -29,6 +29,7 @@
     "install": "^0.13.0",
     "jade": "^1.11.0",
     "jest-enzyme": "^7.1.2",
+    "jquery": "^3.4.1",
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.9.1",
     "mysql": "^2.17.1",
@@ -38,6 +39,7 @@
     "redis": "^2.8.0",
     "requirejs": "^2.3.6",
     "sinon": "^7.5.0",
+    "tslib": "^1.10.0",
     "ws": "^7.2.0"
   },
   "devDependencies": {
@@ -50,8 +52,5 @@
     "jest-environment-webdriver": "^0.2.0",
     "jest-fetch-mock": "^2.1.2",
     "selenium-webdriver": "^4.0.0-alpha.5"
-  },
-  "keywords": [
-    "YfmaoZitongzh"
-  ]
+  }
 }
