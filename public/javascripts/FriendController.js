@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 var app = angular.module('MyApp',[]);// eslint-disable-line
 
 app.controller('searchController', function($scope, $http) {// eslint-disable-line
@@ -122,7 +123,7 @@ app.controller('suggestController', function($scope, $http) {// eslint-disable-l
       },
       data: {
         followHost: hrefList[hrefList.length - 1],
-        followGuest: myEvent.event.path[1].children[1].innerHTML,
+        followGuest: myEvent.event.path[2].children[0].children[0].children[0].children[1].innerHTML,
         status,
       },
     }).then(

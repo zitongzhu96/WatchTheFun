@@ -322,14 +322,14 @@ router.post('/newPost', [verifySession, verifyToken, noCache], (req, res) => {
     if (errAdd) {
       res.status(500).json({
         status: 'error',
-        info: 'Database insert post error',
+        info: 'Database insert post errer',
       });
     } else if (tags.length > 0) {
       connection.query(tagging, tags, (errTag) => {
         if (errTag) {
           res.status(500).json({
             status: 'error',
-            info: 'Database insert tag error',
+            info: 'Database insert tag errer',
           });
         } else {
           res.status(201).json({
@@ -565,7 +565,7 @@ router.get('/injectAll', (req, res) => {
 
 router.get('/following', noCache, (req, res) => {
   const username1 = req.query.username;
-  const query = 'SELECT follow_guest FROM follow WHERE follow_host=?;';
+  const query = 'SELECT ui.username AS follow_guest, ui.icon AS icon FROM follow f, user_info ui WHERE follow_host=? AND ui.username=f.follow_guest;';
   connection.query(query, [username1], (err, rows) => {
     if (err) {
       res.status(500).json({
@@ -579,7 +579,7 @@ router.get('/following', noCache, (req, res) => {
 
 router.get('/follower', noCache, (req, res) => {
   const username1 = req.query.username;
-  const query = 'SELECT follow_host FROM follow WHERE follow_guest=? ;';
+  const query = 'SELECT ui.username AS follow_host, ui.icon AS icon FROM follow f, user_info ui WHERE follow_host=? AND ui.username=f.follow_guest;';
   connection.query(query, [username1], (err, rows) => {
     if (err) {
       res.status(500).json({
