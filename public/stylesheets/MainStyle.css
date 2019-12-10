@@ -465,6 +465,10 @@ div.dropdown-row>a.dropdown-item{
     align-content: center;
     align-items: center;
 }
+.su-container img{
+    height:150px;
+    width:150px;
+}
 #suggests{
     margin-top:2%;
     padding-top:10px;
