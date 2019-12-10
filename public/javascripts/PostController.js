@@ -10,6 +10,13 @@ app.controller('postController', function($scope, $http){// eslint-disable-line
       document.getElementById('set-private').setAttribute('innerHTML', 'Set As Private');
       document.getElementById('set-private').innerHTML = 'Set As Private';
     }
+    if (privacy.innerHTML === 'Set As Private') {
+      document.getElementById('set-private').setAttribute('innerHTML', 'Set As Public');
+      document.getElementById('set-private').innerHTML = 'Set As Public';
+    } else if (privacy.innerHTML === 'Set As Public') {
+      document.getElementById('set-private').setAttribute('innerHTML', 'Set As Private');
+      document.getElementById('set-private').innerHTML = 'Set As Private';
+    }
   };
 
   $scope.addPost = () => {
