@@ -89,7 +89,7 @@ app.controller('dynamicController', function($scope, $http){// eslint-disable-li
 
   $scope.addComment = (myEvent) => {
     const postId = myEvent.event.path[2].firstElementChild.innerHTML;
-    const text = myEvent.event.path[2].children[2].firstElementChild.value;
+    const text = myEvent.event.path[2].children[2].firstElementChild.nextElementSibling.value;
     const now = new Date();
     const year = now.getFullYear();
     let month = now.getMonth() + 1;
