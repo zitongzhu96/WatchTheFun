@@ -5,8 +5,10 @@ app.controller('postController', function($scope, $http){// eslint-disable-line
     const privacy = document.getElementById('set-private');
     if (privacy.getAttribute('innerHTML') === 'Set As Private') {
       document.getElementById('set-private').setAttribute('innerHTML', 'Set As Public');
+      document.getElementById('set-private').innerHTML = 'Set As Public';
     } else if (privacy.getAttribute('innerHTML') === 'Set As Public') {
       document.getElementById('set-private').setAttribute('innerHTML', 'Set As Private');
+      document.getElementById('set-private').innerHTML = 'Set As Private';
     }
   };
 
