@@ -1,0 +1,228 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "CIS557",
+    "version" : "1.0.0",
+    "title" : "Simple Inventory API",
+    "contact" : {
+      "email" : "you@your-company.com"
+    },
+    "license" : {
+      "name" : "Apache 2.0",
+      "url" : "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "host" : "virtserver.swaggerhub.com",
+  "basePath" : "/zitongzhu96/CIS557/1.0.0",
+  "tags" : [ {
+    "name" : "admins",
+    "description" : "Secured Admin-only calls"
+  }, {
+    "name" : "developers",
+    "description" : "Operations available to regular developers"
+  } ],
+  "schemes" : [ "https" ],
+  "paths" : {
+    "/inventory" : {
+      "get" : {
+        "tags" : [ "developers" ],
+        "summary" : "searches inventory",
+        "description" : "By passing in the appropriate options, you can search for\navailable inventory in the system\n",
+        "operationId" : "searchInventory",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "injectMain",
+          "in" : "query",
+          "required" : false,
+          "type" : "json"
+        }, {
+          "name" : "injectAll",
+          "in" : "query",
+          "required" : false,
+          "type" : "json"
+        }, {
+          "name" : "following",
+          "in" : "query",
+          "required" : false,
+          "type" : "json"
+        }, {
+          "name" : "follower",
+          "in" : "query",
+          "required" : false,
+          "type" : "json"
+        }, {
+          "name" : "searchUser",
+          "in" : "query",
+          "required" : false,
+          "type" : "json"
+        }, {
+          "name" : "goFollowing/:followGuest",
+          "in" : "query",
+          "required" : false,
+          "type" : "json"
+        }, {
+          "name" : "countFollowing",
+          "in" : "query",
+          "required" : false,
+          "type" : "json"
+        }, {
+          "name" : "countFollower",
+          "in" : "query",
+          "required" : false,
+          "type" : "json"
+        }, {
+          "name" : "countPost",
+          "in" : "query",
+          "required" : false,
+          "type" : "json"
+        }, {
+          "name" : "followStatus",
+          "in" : "query",
+          "required" : false,
+          "type" : "json"
+        }, {
+          "name" : "suggestFriend",
+          "in" : "query",
+          "required" : false,
+          "type" : "json"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful"
+          },
+          "201" : {
+            "description" : "create new url"
+          },
+          "400" : {
+            "description" : "bad input parameter"
+          },
+          "401" : {
+            "description" : "unautherized"
+          },
+          "404" : {
+            "description" : "not found"
+          },
+          "500" : {
+            "description" : "Server error"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "admins" ],
+        "summary" : "adds an inventory item",
+        "description" : "Adds an item to the system",
+        "operationId" : "addInventory",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "login",
+          "required" : false
+        }, {
+          "in" : "body",
+          "name" : "register",
+          "required" : false
+        }, {
+          "in" : "body",
+          "name" : "newpost",
+          "required" : false
+        }, {
+          "in" : "body",
+          "name" : "addIcon",
+          "required" : false
+        }, {
+          "in" : "body",
+          "name" : "changeIcon",
+          "required" : false
+        }, {
+          "in" : "body",
+          "name" : "follow",
+          "required" : false
+        }, {
+          "in" : "body",
+          "name" : "addLike",
+          "required" : false
+        }, {
+          "in" : "body",
+          "name" : "cancelLike",
+          "required" : false
+        }, {
+          "in" : "body",
+          "name" : "addComment",
+          "required" : false
+        }, {
+          "in" : "body",
+          "name" : "deleteComment",
+          "required" : false
+        }, {
+          "in" : "body",
+          "name" : "deletePost",
+          "required" : false
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful"
+          },
+          "201" : {
+            "description" : "create new url"
+          },
+          "400" : {
+            "description" : "bad input parameter"
+          },
+          "401" : {
+            "description" : "unautherized"
+          },
+          "404" : {
+            "description" : "not found"
+          },
+          "500" : {
+            "description" : "Server error"
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "InventoryItem" : {
+      "type" : "object",
+      "required" : [ "id", "manufacturer", "name", "releaseDate" ],
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "format" : "uuid",
+          "example" : "d290f1ee-6c54-4b01-90e6-d701748f0851"
+        },
+        "name" : {
+          "type" : "string",
+          "example" : "Widget Adapter"
+        },
+        "releaseDate" : {
+          "type" : "string",
+          "format" : "date-time",
+          "example" : "2016-08-29T09:12:33.001Z"
+        },
+        "manufacturer" : {
+          "$ref" : "#/definitions/Manufacturer"
+        }
+      }
+    },
+    "Manufacturer" : {
+      "required" : [ "name" ],
+      "properties" : {
+        "name" : {
+          "type" : "string",
+          "example" : "ACME Corporation"
+        },
+        "homePage" : {
+          "type" : "string",
+          "format" : "url",
+          "example" : "https://www.acme-corp.com"
+        },
+        "phone" : {
+          "type" : "string",
+          "example" : "408-867-5309"
+        }
+      }
+    }
+  }
+}
