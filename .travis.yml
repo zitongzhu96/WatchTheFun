@@ -2,8 +2,8 @@ language: node_js
 
 services:
   - mysql
-before_install:
-  - mysql -u root --password="longpassword" < MySQLdump.sql
+# before_install:
+#   - mysql -u root --password="longpassword" < MySQLdump.sql
 
 install:
   - nvm install node
