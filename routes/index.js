@@ -385,60 +385,127 @@ router.put('/changeIcon', (req, res) => {
 
 router.get('/injectMain', (req, res) => {
   const followHost = req.query.username;
+  const followGuest = req.query.guest;
+  const allFriends = 'SELECT follow_guest FROM follow WHERE follow_host = ?;';
   const injectMain = 'SELECT * FROM post_content WHERE username = ?;';
-  connection.query(injectMain, [followHost], (err, result) => {
-    if (err) {
-      console.log('injection error: ', err);
+  const injectLimited = 'SELECT * FROM post_content WHERE username = ? AND privacy = "All";';
+  connection.query(allFriends,[followHost],(errFriends, result) => {
+    if (errFriends) {
+      console.log('Database error:', errFriends)
     } else {
-      const readLike = 'SELECT * FROM likes WHERE post_id IN (?) AND username=(?);';
-      const readCount = 'SELECT post_id, COUNT(*) AS num FROM likes WHERE post_id IN (?) GROUP BY post_id;';
-      const readComment = 'SELECT * FROM comment WHERE post_id IN (?) ;';
-      // read likes from likes table, read comments from comment table
-      const posts = [];
-      for (let index = 0; index < result.length; index += 1) {
-        const currPost = result[index].post_id;
-        posts.push(currPost);
-      }
-      if (posts.length > 0) {
-        connection.query(readLike, [posts, followHost], (errLike, likes) => {
-          if (errLike) {
-            res.status(404).json({
-              info: `Likes not found: ${errLike}`,
-            });
+      if (Object.values(result).indexOf(followGuest) !== -1){
+        // friends
+        connection.query(injectMain, [followHost], (err, result) => {
+          if (err) {
+            console.log('injection error: ', err);
           } else {
-            connection.query(readComment, [posts], (errCom, comments) => {
-              if (errCom) {
-                res.status(404).json({
-                  info: `Comment not found: ${errCom}`,
-                });
-              } else {
-                connection.query(readCount, [posts], (errCount, counts) => {
-                  if (errCount) {
-                    res.status(404).json({
-                      info: `like counting error: ${errCount}`,
-                    });
-                  } else {
-                    res.status(200).json({
-                      status: 'success',
-                      result,
-                      like: likes,
-                      count: counts,
-                      comment: comments,
-                    });
-                  }
-                });
-              }
-            });
+            const readLike = 'SELECT * FROM likes WHERE post_id IN (?) AND username=(?);';
+            const readCount = 'SELECT post_id, COUNT(*) AS num FROM likes WHERE post_id IN (?) GROUP BY post_id;';
+            const readComment = 'SELECT * FROM comment WHERE post_id IN (?) ;';
+            // read likes from likes table, read comments from comment table
+            const posts = [];
+            for (let index = 0; index < result.length; index += 1) {
+              const currPost = result[index].post_id;
+              posts.push(currPost);
+            }
+            if (posts.length > 0) {
+              connection.query(readLike, [posts, followHost], (errLike, likes) => {
+                if (errLike) {
+                  res.status(404).json({
+                    info: `Likes not found: ${errLike}`,
+                  });
+                } else {
+                  connection.query(readComment, [posts], (errCom, comments) => {
+                    if (errCom) {
+                      res.status(404).json({
+                        info: `Comment not found: ${errCom}`,
+                      });
+                    } else {
+                      connection.query(readCount, [posts], (errCount, counts) => {
+                        if (errCount) {
+                          res.status(404).json({
+                            info: `like counting error: ${errCount}`,
+                          });
+                        } else {
+                          res.status(200).json({
+                            status: 'success',
+                            result,
+                            like: likes,
+                            count: counts,
+                            comment: comments,
+                          });
+                        }
+                      });
+                    }
+                  });
+                }
+              });
+            } else {
+              res.status(500).json({
+                status: 'no post',
+                info: 'No post founded for this user',
+              });
+            }
           }
         });
-      } else {
-        res.status(500).json({
-          status: 'no post',
-          info: 'No post founded for this user',
+      } else if (Object.values(result).indexOf(followGuest) > -1) {
+        // not friends, but single following
+        connection.query(injectLimited, [followHost], (err, result) => {
+          if (err) {
+            console.log('injection error: ', err);
+          } else {
+            const readLike = 'SELECT * FROM likes WHERE post_id IN (?) AND username=(?);';
+            const readCount = 'SELECT post_id, COUNT(*) AS num FROM likes WHERE post_id IN (?) GROUP BY post_id;';
+            const readComment = 'SELECT * FROM comment WHERE post_id IN (?) ;';
+            // read likes from likes table, read comments from comment table
+            const posts = [];
+            for (let index = 0; index < result.length; index += 1) {
+              const currPost = result[index].post_id;
+              posts.push(currPost);
+            }
+            if (posts.length > 0) {
+              connection.query(readLike, [posts, followHost], (errLike, likes) => {
+                if (errLike) {
+                  res.status(404).json({
+                    info: `Likes not found: ${errLike}`,
+                  });
+                } else {
+                  connection.query(readComment, [posts], (errCom, comments) => {
+                    if (errCom) {
+                      res.status(404).json({
+                        info: `Comment not found: ${errCom}`,
+                      });
+                    } else {
+                      connection.query(readCount, [posts], (errCount, counts) => {
+                        if (errCount) {
+                          res.status(404).json({
+                            info: `like counting error: ${errCount}`,
+                          });
+                        } else {
+                          res.status(200).json({
+                            status: 'success',
+                            result,
+                            like: likes,
+                            count: counts,
+                            comment: comments,
+                          });
+                        }
+                      });
+                    }
+                  });
+                }
+              });
+            } else {
+              res.status(500).json({
+                status: 'no post',
+                info: 'No post founded for this user',
+              });
+            }
+          }
         });
       }
     }
-  });
+  })
 });
 
 router.get('/injectAll', (req, res) => {
