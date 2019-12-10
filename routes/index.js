@@ -781,17 +781,24 @@ router.post('/addComment', [verifySession, verifyToken, noCache], (req, res) => 
         info: 'Comment insert error',
       });
     } else {
-      connection.query(addCmtTag, tag, (errCmtTag) => {
-        if (errCmtTag) {
-          res.status(500).json({
-            info: 'Commment tagging insert error',
-          });
-        } else {
-          res.status(200).json({
-            status: 'success',
-          });
-        }
-      });
+      const tagLen = tag.length;
+      if (tagLen > 0) {
+        connection.query(addCmtTag, tag, (errCmtTag) => {
+          if (errCmtTag) {
+            res.status(500).json({
+              info: 'Commment tagging insert error',
+            });
+          } else {
+            res.status(200).json({
+              status: 'success',
+            });
+          }
+        });
+      } else {
+        res.status(200).json({
+          status: 'success',
+        });
+      }
     }
   });
 });
