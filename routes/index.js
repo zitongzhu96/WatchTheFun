@@ -18,11 +18,11 @@ const path = require('path');
 const mysql = require('mysql');
 
 const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  port: '3306',
+  host: 'cis557.cpkprmpifa5w.us-east-1.rds.amazonaws.com',
+  user: 'admin',
+  port: '1518',
   password: 'longpassword',
-  database: 'CIS557',
+  database: 'cis557',
   charset: 'utf8mb4',
 });
 
