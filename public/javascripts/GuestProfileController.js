@@ -51,7 +51,6 @@ app.controller('profileController', function($scope, $http){// eslint-disable-li
               const temp = comment1[index4].cmt_id.split('by')[0];
               comment1[index4].time = temp.substring(10, temp.length);
               result1[index1].commentList.push(comment1[index4]);
-              break;
             }
           }
         }

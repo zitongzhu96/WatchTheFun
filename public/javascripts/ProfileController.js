@@ -50,7 +50,6 @@ app.controller('profileController', function($scope, $http){// eslint-disable-li
               const temp = comment1[index4].cmt_id.split('by')[0];
               comment1[index4].time = temp.substring(10, temp.length);
               result1[index1].commentList.push(comment1[index4]);
-              break;
             }
           }
         }
@@ -146,6 +145,7 @@ app.controller('profileController', function($scope, $http){// eslint-disable-li
     (res) => {
     // console.log(res.data);
       document.getElementById('numPosts').setAttribute('innerHTML', res.data[0].countPost);
+      document.getElementById('numPosts').innerHTML = res.data[0].countPost;
     }, (err) => {
       console.log('Follow error: ', err.data.info);
     },
@@ -164,6 +164,7 @@ app.controller('profileController', function($scope, $http){// eslint-disable-li
     (res) => {
     // console.log(res.data);
       document.getElementById('numFollowers').setAttribute('innerHTML', res.data[0].countFollower);
+      document.getElementById('numFollowers').innerHTML = res.data[0].countFollower;
     }, (err) => {
       console.log('Follow error: ', err.data.info);
     },
@@ -182,6 +183,7 @@ app.controller('profileController', function($scope, $http){// eslint-disable-li
     (res) => {
     // console.log(res.data);
       document.getElementById('numFollowings').setAttribute('innerHTML', res.data[0].countFollowing);
+      document.getElementById('numFollowings').innerHTML = res.data[0].countFollowing;
     }, (err) => {
       console.log('Follow error: ', err.data.info);
     },
