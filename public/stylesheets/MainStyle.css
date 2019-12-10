@@ -496,7 +496,5 @@ div.dropdown-row>a.dropdown-item{
     border:5px solid grey;
 }
 .ng-binding{
-    display:flex;
-    flex-wrap:row;
     width:200px;
 }
