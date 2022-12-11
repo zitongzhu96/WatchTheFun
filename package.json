@@ -24,7 +24,7 @@
     "cookie-parser": "^1.4.4",
     "emojionearea": "^3.4.1",
     "enzyme": "^3.10.0",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "express-session": "^1.17.0",
     "install": "^0.13.0",
     "jade": "^1.11.0",
